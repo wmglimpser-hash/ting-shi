@@ -107,6 +107,7 @@ export const tracks = [
     duration: "02:53",
     length: 173,
     audioSrc: "/audio/01-stone-and-pine-at-midnight.mp3",
+    coverSrc: "/art/covers/01.png",
     detail: "深夜山色入墨，琴声从松影之间刚刚生出。",
   },
   {
@@ -118,6 +119,7 @@ export const tracks = [
     duration: "02:53",
     length: 173,
     audioSrc: "/audio/02-earth-breathing-before-dawn.mp3",
+    coverSrc: "/art/covers/02.png",
     detail: "黎明尚未抵达，埙声托住土色与缓慢呼吸。",
   },
   {
@@ -129,6 +131,7 @@ export const tracks = [
     duration: "02:51",
     length: 171,
     audioSrc: "/audio/03-pale-ink-awakening.mp3",
+    coverSrc: "/art/covers/03.png",
     detail: "墨蓝向青灰打开，第一束光从窗隙里显现。",
   },
   {
@@ -140,6 +143,7 @@ export const tracks = [
     duration: "02:55",
     length: 175,
     audioSrc: "/audio/04-morning-light-on-still-water.mp3",
+    coverSrc: "/art/covers/04.png",
     detail: "露水从草叶落下，晨风清澈而有边界。",
   },
   {
@@ -151,6 +155,7 @@ export const tracks = [
     duration: "02:54",
     length: 174,
     audioSrc: "/audio/05-shan-fu-cheng-guang.mp3",
+    coverSrc: "/art/covers/05.png",
     detail: "山腹承住日光，声音回到一个温和的中心。",
   },
   {
@@ -162,6 +167,7 @@ export const tracks = [
     duration: "02:52",
     length: 172,
     audioSrc: "/audio/06-warm-stones-in-the-current.mp3",
+    coverSrc: "/art/covers/06.png",
     detail: "溪边石面渐暖，水声把稳定的气息带向远处。",
   },
   {
@@ -173,6 +179,7 @@ export const tracks = [
     duration: "02:55",
     length: 175,
     audioSrc: "/audio/07-sunlight-across-the-ridge.mp3",
+    coverSrc: "/art/covers/07.png",
     detail: "正午光线丰沛，弦上的颗粒清晰而不喧闹。",
   },
   {
@@ -184,6 +191,7 @@ export const tracks = [
     duration: "02:55",
     length: 175,
     audioSrc: "/audio/08-jin-feng-fu-guo-shan-ji.mp3",
+    coverSrc: "/art/covers/08.png",
     detail: "午后风过长坡，声音带着向前流动的金色。",
   },
   {
@@ -195,6 +203,7 @@ export const tracks = [
     duration: "02:53",
     length: 173,
     audioSrc: "/audio/09-lv-shui-wan-qing.mp3",
+    coverSrc: "/art/covers/09.png",
     detail: "云影变长，光在深碧的水面上缓慢移动。",
   },
   {
@@ -206,6 +215,7 @@ export const tracks = [
     duration: "02:54",
     length: 174,
     audioSrc: "/audio/10-where-the-bell-descends.mp3",
+    coverSrc: "/art/covers/10.png",
     detail: "一声远钟沉入暮水，山形在薄雾中逐渐收拢。",
   },
   {
@@ -217,6 +227,7 @@ export const tracks = [
     duration: "02:55",
     length: 175,
     audioSrc: "/audio/11-beneath-the-flickering-wick.mp3",
+    coverSrc: "/art/covers/11.png",
     detail: "灯影与夜色相接，火的温度仍在，却已向内收拢。",
   },
   {
@@ -228,6 +239,7 @@ export const tracks = [
     duration: "02:53",
     length: 173,
     audioSrc: "/audio/12-moonlight-on-the-high-ridge.mp3",
+    coverSrc: "/art/covers/12.png",
     detail: "月光穿过窗棂，最后的暖意回到一处安静中心。",
   },
 ];

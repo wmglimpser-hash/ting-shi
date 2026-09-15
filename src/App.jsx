@@ -130,6 +130,16 @@ function ListenPage({
               {String(index + 1).padStart(2, "0")}
             </span>
             <span className="track-art">
+              {track.coverSrc ? (
+                <img
+                  src={track.coverSrc}
+                  alt=""
+                  loading="lazy"
+                  onError={(event) => {
+                    event.currentTarget.hidden = true;
+                  }}
+                />
+              ) : null}
               <i />
               <b />
             </span>
