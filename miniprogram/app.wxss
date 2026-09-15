@@ -1,0 +1,74 @@
+page {
+  --paper: #f3f0e7;
+  --paper-deep: #e9e6db;
+  --ink: #293329;
+  --muted: #7d8378;
+  --line: #d6d5c9;
+  --accent: #b96952;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: 28rpx;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+button::after {
+  border: 0;
+}
+
+scroll-view,
+view,
+text,
+button {
+  box-sizing: border-box;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 22rpx 34rpx 58rpx;
+}
+
+.mono,
+.eyebrow,
+.time,
+.date-meta,
+.scene-code {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.08em;
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: 18rpx;
+  letter-spacing: 0.16em;
+}
+
+.link-arrow {
+  color: var(--muted);
+  font-size: 30rpx;
+}
+
+.state-growth {
+  --accent: #698976;
+}
+
+.state-flow {
+  --accent: #667d84;
+}
+
+.state-transform {
+  --accent: #9e8261;
+}
+
+.state-converge {
+  --accent: #c07a5d;
+}

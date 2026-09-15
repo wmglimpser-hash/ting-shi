@@ -1,0 +1,17 @@
+{
+  "desc": "听时小程序页面索引",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "pages/index/index"
+    },
+    {
+      "action": "allow",
+      "page": "pages/listen/listen"
+    },
+    {
+      "action": "allow",
+      "page": "pages/source/source"
+    }
+  ]
+}

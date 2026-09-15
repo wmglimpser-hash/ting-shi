@@ -1,0 +1,86 @@
+<view class="page now-page state-{{state.id}}">
+  <view class="topline">
+    <text class="brand">听时</text>
+    <view class="calendar">
+      <text class="date-meta">{{calendar.gregorian}}</text>
+      <text class="calendar-sub">{{calendar.weekday}} · {{calendar.lunar}}</text>
+    </view>
+  </view>
+
+  <view class="time-center">
+    <text class="time-kicker">四柱时间</text>
+    <view class="pillars-small">
+      <text>{{calendar.yearPillar}}</text>
+      <text>{{calendar.monthPillar}}</text>
+      <text>{{calendar.dayPillar}}</text>
+    </view>
+    <text class="time-pillar">{{calendar.hourPillar}}</text>
+    <text class="time-detail">{{currentHour.range}} · {{currentHour.element}} · {{currentHour.tone}}</text>
+  </view>
+
+  <view class="state-heading">
+    <view class="state-title-row">
+      <text class="state-index">0{{stateIndex + 1}}</text>
+      <text class="state-name">{{state.name}}</text>
+    </view>
+    <text class="eyebrow">{{state.subtitle}} · {{state.range}}</text>
+    <text class="state-title">{{state.title}}</text>
+    <view class="state-control-row">
+      <picker mode="selector" range="{{stateNames}}" value="{{stateIndex}}" bindchange="onStateChange">
+        <view class="state-picker">{{previewing ? '预览 · ' : '随时间 · '}}{{state.name}} <text>⌄</text></view>
+      </picker>
+      <button class="reset-button" wx:if="{{previewing}}" bindtap="resetState">回到此刻</button>
+    </view>
+  </view>
+
+  <view class="now-card">
+    <view class="card-topline">
+      <text>当前声场</text>
+      <text class="scene-code">{{currentHour.name}}时 · {{currentHour.element}} · {{currentHour.tone}}</text>
+    </view>
+    <view class="scene-copy">
+      <text class="eyebrow">{{state.hint}}</text>
+      <text class="scene-title">{{currentHour.mood}}</text>
+      <text class="scene-caption">{{selectedTrack.detail}}</text>
+    </view>
+    <view class="orb-wrap">
+      <view class="orb-orbit orbit-one"></view>
+      <view class="orb-orbit orbit-two"></view>
+      <view class="orb-core"></view>
+      <text class="orb-label">{{selectedTone.note}}</text>
+    </view>
+    <view class="mini-player">
+      <view class="track-cover cover-{{selectedTrack.id}}"></view>
+      <view class="track-copy">
+        <text class="track-title">{{selectedTrack.title}}</text>
+        <text class="track-sub">{{selectedTrack.sub}} · {{selectedTrack.tone}}音</text>
+      </view>
+      <button class="play-button {{isPlaying ? 'playing' : ''}}" bindtap="togglePlay">{{isPlaying ? 'Ⅱ' : '▶'}}</button>
+    </view>
+    <view class="wave {{isPlaying ? 'playing' : ''}}">
+      <view wx:for="{{waveBars}}" wx:key="index" class="wave-bar" style="height: {{item}}rpx; animation-delay: -{{index}}0ms"></view>
+    </view>
+    <text class="card-footer">一呼，一吸，一段声音。</text>
+  </view>
+
+  <view class="tone-dock">
+    <view class="tone-current">
+      <view class="tone-dot" style="background: {{selectedTone.color}}"></view>
+      <text>{{selectedTone.name}}音 · {{selectedTone.element}} · {{selectedTone.colorName}}</text>
+    </view>
+    <scroll-view class="tone-scroll" scroll-x="true" show-scrollbar="false">
+      <view class="tone-list">
+        <button wx:for="{{tones}}" wx:key="name" class="tone-button {{toneIndex === index ? 'active' : ''}}" data-index="{{index}}" bindtap="onToneChange">
+          <view class="tone-dot" style="background: {{item.color}}"></view>
+          <text>{{item.name}}</text>
+        </button>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="quick-grid">
+    <button data-id="{{selectedTrack.id}}" bindtap="chooseTrack"><text>当前推荐</text><text>从此刻出发　→</text></button>
+    <button data-id="{{selectedTrack.id}}" bindtap="togglePlay"><text>顺时聆听</text><text>{{isPlaying ? '正在播放　' : '让声音流动　'}}→</text></button>
+  </view>
+  <text class="demo-note">正式音频 · 十二时辰曲库</text>
+</view>

@@ -1,0 +1,37 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/listen/listen",
+    "pages/source/source"
+  ],
+  "window": {
+    "navigationBarTitleText": "听时",
+    "navigationBarBackgroundColor": "#f3f0e7",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f3f0e7",
+    "backgroundTextStyle": "light",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#8a8d80",
+    "selectedColor": "#2e3a2e",
+    "backgroundColor": "#f3f0e7",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "此刻"
+      },
+      {
+        "pagePath": "pages/listen/listen",
+        "text": "听"
+      },
+      {
+        "pagePath": "pages/source/source",
+        "text": "源"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

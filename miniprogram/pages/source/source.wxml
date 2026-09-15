@@ -1,0 +1,41 @@
+<view class="page source-page">
+  <view class="page-heading source-heading">
+    <view>
+      <text class="eyebrow">03 / 关系与出处</text>
+      <text class="page-title">源</text>
+    </view>
+    <text class="page-intro">只呈现古人如何理解。
+      <text>不替你判断，也不替你解释。</text>
+    </text>
+  </view>
+
+  <view class="source-hero">
+    <view class="source-seal"><text>时</text><text>听时</text></view>
+    <view class="source-copy">
+      <text class="eyebrow">一条关系，从子时开始</text>
+      <text class="source-title">时间 → 经脉 → 五行 → 五音</text>
+      <text class="source-desc">同一个时辰，可以从不同的传统系统观察。听时选择“经脉视角”作为当前声音入口，让知识的来源和推演路径保持可见。</text>
+    </view>
+  </view>
+
+  <view class="relation-card">
+    <view class="relation-top"><text>当前时辰 · {{current.hour.name}}时</text><text>{{current.hour.range}}</text></view>
+    <view class="relation-chain">
+      <view class="chain-item"><text class="chain-index">01</text><text>{{current.hour.name}}时</text><text>纳子法 · 时辰</text></view>
+      <text class="chain-arrow">→</text>
+      <view class="chain-item"><text class="chain-index">02</text><text>{{current.hour.meridian}}</text><text>子午流注 · 经脉</text></view>
+      <text class="chain-arrow">→</text>
+      <view class="chain-item"><text class="chain-index">03</text><text>{{current.hour.element}}</text><text>脏腑五行 · 属性</text></view>
+      <text class="chain-arrow">→</text>
+      <view class="chain-item highlight"><text class="chain-index">04</text><text>{{current.hour.tone}}音</text><text>声律 · 入耳</text></view>
+    </view>
+  </view>
+
+  <view class="source-list">
+    <view class="source-item"><text class="source-number">01</text><view><text class="source-item-title">《灵枢 · 顺气一日分为四时》</text><text class="source-item-desc">“朝则人气始生，日中而阳气隆，日西而阳气已虚，气门乃闭。”</text></view></view>
+    <view class="source-item"><text class="source-number">02</text><view><text class="source-item-title">《乐记 · 乐本篇》</text><text class="source-item-desc">声音的秩序与人的情志相互感应，五音因此成为观察气息的一种入口。</text></view></view>
+    <view class="source-item"><text class="source-number">03</text><view><text class="source-item-title">听时的使用边界</text><text class="source-item-desc">页面呈现传统关系与声音联想，不作为医疗、诊断或效果判断依据。</text></view></view>
+  </view>
+
+  <button class="source-action" bindtap="goListen">去听一段声音　→</button>
+</view>

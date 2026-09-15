@@ -1,0 +1,22 @@
+{
+  "description": "听时原生微信小程序",
+  "packOptions": {
+    "ignore": []
+  },
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "minified": true,
+    "postcss": true,
+    "compileHotReLoad": true,
+    "lazyloadPlaceholderEnable": false,
+    "useCompilerPlugins": []
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.7.3",
+  "appid": "touristappid",
+  "projectname": "ting-shi-miniprogram",
+  "miniprogramRoot": "miniprogram/",
+  "condition": {}
+}

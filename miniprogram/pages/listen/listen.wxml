@@ -1,0 +1,54 @@
+<view class="page listen-page">
+  <view class="page-heading">
+    <view>
+      <text class="eyebrow">02 / 声音索引</text>
+      <text class="page-title">听</text>
+    </view>
+    <text class="page-intro">五音不是分类标签，
+      <text>是十二个时刻的不同气息。</text>
+    </text>
+  </view>
+
+  <scroll-view class="tone-tabs" scroll-x="true" show-scrollbar="false">
+    <view class="tone-tabs-inner">
+      <button class="tone-tab {{toneIndex === 0 ? 'active' : ''}}" data-index="0" bindtap="onToneChange">全部</button>
+      <button wx:for="{{tones}}" wx:key="name" class="tone-tab {{toneIndex === index + 1 ? 'active' : ''}}" data-index="{{index + 1}}" bindtap="onToneChange">
+        <text>{{item.name}}</text><text>{{item.colorName}}</text>
+      </button>
+    </view>
+  </scroll-view>
+
+  <view class="tone-story">
+    <view class="tone-story-orb" style="background: {{toneIndex === 0 ? '#789087' : tones[toneIndex - 1].color}}">
+      <text>{{selectedTone === '全部' ? '五音' : selectedTone}}</text>
+    </view>
+    <view class="tone-story-copy">
+      <text class="eyebrow">{{selectedTone === '全部' ? 'TWELVE MOMENTS' : 'THE ' + selectedTone + ' MODE'}}</text>
+      <text class="story-title">{{selectedTone === '全部' ? '从此刻出发，听见一天的起伏。' : tones[toneIndex - 1].element + ' · ' + tones[toneIndex - 1].note}}</text>
+      <text class="story-desc">{{selectedTone === '全部' ? '每个时辰有一首主题声音。它们共享一套五声音阶，也各自保留属于天色、风与地形的细微不同。' : '以' + selectedTone + '音为中心的五声音阶，让旋律在此刻的气息之间往返。'}}</text>
+      <text class="story-color">五色 · {{selectedTone === '全部' ? '随音流转' : tones[toneIndex - 1].colorName}}</text>
+    </view>
+  </view>
+
+  <view class="library-heading">
+    <text>时辰曲目</text>
+    <text>{{visibleTracks.length}} 首声音</text>
+  </view>
+  <view class="track-list">
+    <button wx:for="{{visibleTracks}}" wx:key="id" class="track-row {{selectedTrackId === item.id ? 'selected' : ''}}" data-id="{{item.id}}" bindtap="onTrack">
+      <text class="track-number">{{index < 9 ? '0' + (index + 1) : index + 1}}</text>
+      <view class="list-cover cover-{{item.id}}"></view>
+      <view class="list-copy">
+        <text class="list-title">{{item.title}}</text>
+        <text class="list-sub">{{item.hour}} · {{item.sub}}</text>
+      </view>
+      <text class="list-tone">{{item.tone}}</text>
+      <text class="list-duration">{{item.duration}}</text>
+      <text class="list-action">{{selectedTrackId === item.id && isPlaying ? 'Ⅱ' : '▶'}}</text>
+    </button>
+  </view>
+  <view class="listen-footer">
+    <text>正式音频 · 十二时辰曲库</text>
+    <button bindtap="goSource">了解五音关系　→</button>
+  </view>
+</view>
