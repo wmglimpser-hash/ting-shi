@@ -121,7 +121,9 @@ function ListenPage({
         {visibleTracks.map((track, index) => (
           <button
             className={
-              "track-card " + (selectedTrack.id === track.id ? "selected" : "")
+              "track-card " +
+              (selectedTrack.id === track.id ? "selected " : "") +
+              (selectedTrack.id === track.id && isPlaying ? "playing" : "")
             }
             key={track.id}
             onClick={() => onTrack(track)}
@@ -261,6 +263,88 @@ function SourcePage({ current, onNavigate }) {
         <Icon name="arrow" size={17} />
       </button>
     </main>
+  );
+}
+
+function PlayerWave({ playing }) {
+  return (
+    <div className={"global-player-wave " + (playing ? "playing" : "")} aria-hidden="true">
+      {Array.from({ length: 34 }, (_, index) => (
+        <i
+          key={index}
+          style={{
+            "--bar-height": `${18 + Math.abs(Math.sin(index * 1.19)) * 72}%`,
+            "--bar-delay": `${(index % 8) * -0.13}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function GlobalPlayer({
+  track,
+  isPlaying,
+  progress,
+  onPlay,
+  onSeek,
+  onSkip,
+}) {
+  const elapsed = `${String(Math.floor(progress / 60)).padStart(2, "0")}:${String(
+    Math.floor(progress % 60),
+  ).padStart(2, "0")}`;
+  const progressPercent = track.length
+    ? Math.min(100, Math.max(0, (progress / track.length) * 100))
+    : 0;
+
+  return (
+    <aside
+      className={`global-player ${isPlaying ? "is-playing" : "is-paused"}`}
+      aria-label="独立播放器"
+    >
+      <div className="global-player-art">
+        {track.coverSrc ? (
+          <img src={track.coverSrc} alt={`${track.title}封面`} loading="eager" />
+        ) : null}
+      </div>
+      <div className="global-player-copy">
+        <div className="global-player-kicker">
+          <span>{isPlaying ? "正在聆听" : "已暂停"}</span>
+          <span>{track.hour} · {track.tone}音</span>
+        </div>
+        <strong>{track.title}</strong>
+        <small>{track.sub} · {track.detail}</small>
+        <PlayerWave playing={isPlaying} />
+        <div className="global-player-progress">
+          <span>{elapsed}</span>
+          <input
+            aria-label="独立播放器进度"
+            type="range"
+            min="0"
+            max={track.length}
+            value={progress}
+            onChange={(event) => onSeek(Number(event.target.value))}
+            style={{ "--player-progress": `${progressPercent}%` }}
+          />
+          <span>{track.duration}</span>
+        </div>
+      </div>
+      <div className="global-player-controls">
+        <button aria-label="上一首" onClick={() => onSkip(-1)}>
+          ‹
+        </button>
+        <button
+          className="global-player-play"
+          aria-label={isPlaying ? "暂停当前声音" : "播放当前声音"}
+          onClick={onPlay}
+        >
+          <Icon name={isPlaying ? "pause" : "play"} size={18} />
+        </button>
+        <button aria-label="下一首" onClick={() => onSkip(1)}>
+          ›
+        </button>
+      </div>
+    </aside>
   );
 }
 
@@ -482,6 +566,19 @@ function App() {
     triggerEvent("archive", "保存此刻");
   };
 
+  const handleSkip = (direction) => {
+    const next =
+      tracks[
+        (tracks.findIndex((item) => item.id === selectedTrack.id) +
+          direction +
+          tracks.length) %
+          tracks.length
+      ];
+    setSelectedTrack(next);
+    setProgress(0);
+    setIsPlaying(true);
+  };
+
   const playerTrack = useMemo(
     () => ({
       ...selectedTrack,
@@ -534,17 +631,7 @@ function App() {
             setEventLabel("进入专注");
             window.clearTimeout(eventTimer.current);
           }}
-          onSkip={(direction) => {
-            const next =
-              tracks[
-                (tracks.findIndex((item) => item.id === selectedTrack.id) +
-                  direction +
-                  tracks.length) %
-                  tracks.length
-              ];
-            setSelectedTrack(next);
-            setProgress(0);
-          }}
+          onSkip={handleSkip}
         />
       )}
       {page === "listen" && (
@@ -561,6 +648,14 @@ function App() {
       {page === "source" && (
         <SourcePage current={current} onNavigate={navigate} />
       )}
+      <GlobalPlayer
+        track={playerTrack}
+        isPlaying={isPlaying}
+        progress={progress}
+        onPlay={() => handlePlay()}
+        onSeek={handleSeek}
+        onSkip={handleSkip}
+      />
       <BottomNav page={page} onNavigate={navigate} />
     </div>
   );

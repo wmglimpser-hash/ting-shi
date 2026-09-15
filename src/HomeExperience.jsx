@@ -365,7 +365,7 @@ function TrackRow({
   const selected = item.id === selectedTrack.id;
   return (
     <button
-      className={`listening-row ${dark ? "dark" : ""} ${selected ? "selected" : ""}`}
+      className={`listening-row ${dark ? "dark" : ""} ${selected ? "selected" : ""} ${selected && isPlaying ? "playing" : ""}`}
       onClick={() => onTrack(item)}
       aria-label={`${selected && isPlaying ? "暂停" : "播放"}${item.title}`}
     >
@@ -550,7 +550,7 @@ function Flow(props) {
           <h2>继续聆听</h2>
           <p>流动的声音，陪伴此刻。</p>
         </div>
-        <div className="river-player">
+        <div className={`river-player ${isPlaying ? "playing" : ""}`}>
           <Cover variant={track.id} src={track.coverSrc} playing={isPlaying} />
           <span>
             <strong>{track.title}</strong>
@@ -696,7 +696,12 @@ function Transform(props) {
             <b>＝</b>
             <span>此刻</span>
           </div>
-          <div className="generated-track" key={result.id + selection}>
+          <div
+            className={`generated-track ${
+              isPlaying && track.id === result.id ? "playing" : ""
+            }`}
+            key={result.id + selection}
+          >
             <span className="overline">为你组合的声音</span>
             <div>
               <Cover
@@ -949,7 +954,7 @@ function Archive(props) {
               </div>
             )}
           </div>
-          <div className="archive-mini-player">
+          <div className={`archive-mini-player ${isPlaying ? "playing" : ""}`}>
             <Cover
               variant={track.id}
               src={track.coverSrc}
