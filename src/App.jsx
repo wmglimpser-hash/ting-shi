@@ -129,7 +129,11 @@ function ListenPage({
             <span className="track-number">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span className="track-art">
+            <span
+              className={`track-art ${
+                selectedTrack.id === track.id && isPlaying ? "playing" : ""
+              }`}
+            >
               {track.coverSrc ? (
                 <img
                   src={track.coverSrc}

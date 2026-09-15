@@ -380,15 +380,23 @@ svg {
   display: inline-block;
   width: 46px;
   height: 46px;
-  border-radius: 50%;
+  aspect-ratio: 1;
+  border-radius: 10px;
   flex-shrink: 0;
   overflow: hidden;
   position: relative;
-  background: #a0aa99;
+  background: #1c2a25;
   border: 1px solid #ffffff30;
+  box-shadow: 0 5px 16px #101b241c;
+  transition:
+    width 0.35s ease,
+    height 0.35s ease,
+    border-radius 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
 }
 .cover.square {
-  border-radius: 5px;
+  border-radius: 9px;
 }
 .cover > img {
   position: absolute;
@@ -397,7 +405,15 @@ svg {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
+  background: #1c2a25;
+  transition: transform 0.8s ease;
+}
+.cover.playing {
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 28%, #101b2426);
+}
+.cover.playing > img {
+  transform: scale(1.025);
 }
 .cover-0 {
   background: url("/art/river.png") 65% 65% / 360%;
@@ -512,6 +528,11 @@ svg {
   align-items: center;
   border-bottom: 1px solid var(--line);
   padding: 15px 0;
+}
+.listening-row .cover {
+  width: 52px;
+  height: 52px;
+  border-radius: 9px;
 }
 .listening-row:hover {
   transform: translateX(3px);
@@ -833,15 +854,24 @@ svg {
   left: 20%;
   right: 13%;
   top: 54%;
-  border-radius: 45px;
-  padding: 11px 13px 11px 10px;
+  border-radius: 18px;
+  padding: 12px 15px 12px 12px;
   background: #f1f0e3ed;
   color: #27362b;
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 15px;
   box-shadow: 0 9px 40px #101b2430;
   backdrop-filter: blur(8px);
+}
+.river-player .cover {
+  width: 78px;
+  height: 78px;
+  border-radius: 12px;
+  border-color: #26392d34;
+}
+.river-player .cover.playing {
+  box-shadow: 0 8px 26px color-mix(in srgb, var(--accent) 36%, #10201935);
 }
 .river-player > span:nth-child(2) {
   flex: 1;
@@ -1096,8 +1126,9 @@ svg {
   margin-top: 16px;
 }
 .generated-track .cover {
-  width: 57px;
-  height: 57px;
+  width: 66px;
+  height: 66px;
+  border-radius: 10px;
 }
 .generated-track > div > span:nth-child(2) {
   flex: 1;
@@ -1363,10 +1394,10 @@ svg {
   animation: archive-settle 0.9s 0.1s both;
 }
 .memory-stack .cover {
-  height: 85px;
-  width: 116px;
+  height: 104px;
+  width: 104px;
   border: 0;
-  border-radius: 0;
+  border-radius: 8px;
 }
 .memory-stack > div > span:last-child {
   font-size: 14px;
@@ -1431,8 +1462,9 @@ svg {
   background: #77776145;
 }
 .archive-rows .cover {
-  width: 41px;
-  height: 41px;
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
 }
 .archive-rows .row-copy strong {
   font-size: 13px;
@@ -1452,6 +1484,11 @@ svg {
   padding: 11px 13px;
   border-radius: 7px;
   margin-top: 18px;
+}
+.archive-mini-player .cover {
+  width: 60px;
+  height: 60px;
+  border-radius: 9px;
 }
 .archive-mini-player > span:nth-child(2) {
   flex: 1;
@@ -2823,6 +2860,81 @@ svg {
     border-radius: 50%;
     box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 12%, transparent);
   }
+}
+
+/* Artwork keeps its full composition on compact screens as well. */
+@media (max-width: 760px) {
+  .river-player {
+    gap: 11px;
+    padding: 9px 11px 9px 9px;
+    border-radius: 14px;
+  }
+
+  .river-player .cover {
+    width: 62px;
+    height: 62px;
+    border-radius: 10px;
+  }
+
+  .generated-track .cover {
+    width: 58px;
+    height: 58px;
+  }
+
+  .listening-row .cover {
+    width: 44px;
+    height: 44px;
+  }
+
+  .archive-rows .cover {
+    width: 44px;
+    height: 44px;
+  }
+
+  .archive-mini-player .cover {
+    width: 54px;
+    height: 54px;
+  }
+
+  .memory-stack .cover {
+    width: 70px;
+    height: 70px;
+  }
+
+  .memory-stack > div > span:last-child {
+    width: 70px;
+  }
+
+  .track-card {
+    grid-template-columns: 23px 48px 1fr 25px;
+  }
+
+  .track-art {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .river-player .cover {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@keyframes artwork-image-breathe {
+  0%,
+  100% {
+    transform: scale(1.015);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+.cover.playing > img,
+.track-art.playing > img {
+  animation: artwork-image-breathe 3.8s ease-in-out infinite;
 }
 
 /* Keep the information rail visually centered at wide/full-screen widths. */

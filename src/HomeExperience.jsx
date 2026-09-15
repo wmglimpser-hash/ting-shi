@@ -269,11 +269,11 @@ function RoundButton({ playing, onClick, large = false, label }) {
   );
 }
 
-function Cover({ variant = 0, square = false, src }) {
+function Cover({ variant = 0, square = false, src, playing = false }) {
   return (
     <span
       aria-hidden="true"
-      className={`cover cover-${variant % 5} ${square ? "square" : ""}`}
+      className={`cover cover-${variant % 5} ${square ? "square" : ""} ${playing ? "playing" : ""}`}
     >
       {src ? (
         <img
@@ -369,7 +369,7 @@ function TrackRow({
       onClick={() => onTrack(item)}
       aria-label={`${selected && isPlaying ? "暂停" : "播放"}${item.title}`}
     >
-      <Cover variant={index} src={item.coverSrc} />
+      <Cover variant={index} src={item.coverSrc} playing={selected && isPlaying} />
       <span className="row-copy">
         <strong>{item.title}</strong>
         <small>
@@ -551,7 +551,7 @@ function Flow(props) {
           <p>流动的声音，陪伴此刻。</p>
         </div>
         <div className="river-player">
-          <Cover variant={track.id} src={track.coverSrc} />
+          <Cover variant={track.id} src={track.coverSrc} playing={isPlaying} />
           <span>
             <strong>{track.title}</strong>
             <small>
@@ -699,7 +699,12 @@ function Transform(props) {
           <div className="generated-track" key={result.id + selection}>
             <span className="overline">为你组合的声音</span>
             <div>
-              <Cover variant={result.id} src={result.coverSrc} square />
+              <Cover
+                variant={result.id}
+                src={result.coverSrc}
+                playing={isPlaying && track.id === result.id}
+                square
+              />
               <span>
                 <strong>{result.title}</strong>
                 <small>
@@ -882,7 +887,12 @@ function Archive(props) {
             <div />
             <div />
             <div>
-              <Cover square variant={track.id} src={track.coverSrc} />
+              <Cover
+                square
+                variant={track.id}
+                src={track.coverSrc}
+                playing={isPlaying}
+              />
               <span>
                 听时<small>声有所归 / 05</small>
               </span>
@@ -940,7 +950,12 @@ function Archive(props) {
             )}
           </div>
           <div className="archive-mini-player">
-            <Cover variant={track.id} src={track.coverSrc} square />
+            <Cover
+              variant={track.id}
+              src={track.coverSrc}
+              playing={isPlaying}
+              square
+            />
             <span>
               <strong>{track.title}</strong>
               <small>
