@@ -2815,6 +2815,155 @@ svg {
     box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 12%, transparent);
   }
 }
+
+/* Keep the information rail visually centered at wide/full-screen widths. */
+@media (min-width: 761px) {
+  .desktop-moment-verse {
+    position: relative;
+    display: block;
+    min-height: clamp(238px, 30vh, 330px);
+    padding-block: clamp(25px, 4vh, 42px);
+  }
+
+  .moment-verse-stage {
+    width: min(calc(100% - 330px), 760px);
+    margin-inline: auto;
+  }
+
+  .moment-verse-rail {
+    position: absolute;
+    inset: clamp(25px, 4vh, 42px) auto clamp(25px, 4vh, 42px) 0;
+    width: 78px;
+  }
+
+  .moment-verse-context {
+    position: absolute;
+    inset: clamp(25px, 4vh, 42px) 0 clamp(25px, 4vh, 42px) auto;
+    width: 176px;
+  }
+
+  .moment-verse-lines {
+    height: clamp(164px, 19vh, 220px);
+  }
+}
+
+/* The same moment information is available on the responsive home page. */
+@media (max-width: 760px) {
+  .chapter-heading {
+    display: block;
+    padding: 0 0 20px;
+  }
+
+  .chapter-heading > .chapter-title,
+  .chapter-heading > .chapter-caption,
+  .chapter-heading > .chapter-context {
+    display: none;
+  }
+
+  .desktop-moment-verse {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 14px;
+    min-height: 0;
+    padding: 19px 0 21px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .moment-verse-rail {
+    display: flex;
+    min-height: 142px;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2px;
+  }
+
+  .moment-verse-index {
+    font-size: 10px;
+  }
+
+  .moment-verse-rail-line {
+    margin: 10px 0;
+  }
+
+  .moment-verse-stage {
+    width: auto;
+    min-width: 0;
+  }
+
+  .moment-verse-topline {
+    gap: 12px;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+
+  .moment-verse-topline span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .moment-verse-lines {
+    height: 128px;
+    margin-top: 8px;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 18%,
+      #000 82%,
+      transparent 100%
+    );
+  }
+
+  .moment-verse-line {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 6px 0;
+  }
+
+  .moment-verse-line-meta {
+    padding-top: 0;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+  }
+
+  .moment-verse-line-copy {
+    gap: 5px;
+  }
+
+  .moment-verse-line-copy strong {
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+
+  .moment-verse-line-copy small {
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    line-height: 1.55;
+  }
+
+  .moment-verse-line.active .moment-verse-line-copy strong {
+    font-size: clamp(20px, 6vw, 26px);
+    letter-spacing: 0.08em;
+  }
+
+  .moment-verse-progress {
+    gap: 5px;
+    margin: 1px 0 0;
+  }
+
+  .moment-verse-progress i {
+    width: 11px;
+  }
+
+  .moment-verse-progress i.active {
+    width: 25px;
+  }
+
+  .moment-verse-context {
+    display: none;
+  }
+}
 body {
   min-width: 0;
 }

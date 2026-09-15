@@ -200,7 +200,7 @@ function MomentLyric({ current, state, selectedTone, selectedTrack }) {
   }, [lines.length]);
 
   return (
-    <div className="desktop-moment-verse" aria-label="此刻歌词式理论导览">
+    <div className="desktop-moment-verse" aria-label="此刻信息导览">
       <div className="moment-verse-rail" aria-hidden="true">
         <span className="moment-verse-index">{state.index}</span>
         <span className="moment-verse-rail-line" />
