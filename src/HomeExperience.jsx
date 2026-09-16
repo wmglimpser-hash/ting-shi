@@ -80,6 +80,13 @@ const nav = [
   { id: "listen", label: "听" },
   { id: "source", label: "源" },
 ];
+const elementModels = {
+  木: "/models/wood.glb",
+  火: "/models/fire.glb",
+  土: "/models/earth.glb",
+  金: "/models/metal.glb",
+  水: "/models/water.glb",
+};
 const timeText = (value) =>
   `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(Math.floor(value % 60)).padStart(2, "0")}`;
 
@@ -784,8 +791,12 @@ function Transform(props) {
   );
 }
 
-function FocusOrb({ playing, motionEnabled }) {
+function FocusOrb({ playing, motionEnabled, modelUrl }) {
   const [modelState, setModelState] = useState("loading");
+
+  useEffect(() => {
+    setModelState("loading");
+  }, [modelUrl]);
 
   return (
     <div className="focus-orbit" aria-hidden="true">
@@ -830,8 +841,10 @@ function FocusOrb({ playing, motionEnabled }) {
         </svg>
       </div>
       <WoodModel
+        key={modelUrl}
         playing={playing}
         motionEnabled={motionEnabled}
+        modelUrl={modelUrl}
         visible={modelState === "ready"}
         onReady={() => setModelState("ready")}
         onError={() => setModelState("error")}
@@ -859,6 +872,7 @@ function Converge(props) {
   const saved = savedTracks.some((item) => item.id === track.id);
   const tone = tones.find((item) => item.name === track.tone) || tones[0];
   const moment = current?.data || {};
+  const modelUrl = elementModels[moment.element] || elementModels.木;
   return (
     <section
       className={
@@ -920,7 +934,11 @@ function Converge(props) {
         </aside>
         <div className="orb-space">
           <span className="orb-annotation">INHALE · EXHALE</span>
-          <FocusOrb playing={isPlaying} motionEnabled={motionEnabled} />
+          <FocusOrb
+            playing={isPlaying}
+            motionEnabled={motionEnabled}
+            modelUrl={modelUrl}
+          />
           <span className="orb-caption">声音之外，一切都慢下来。</span>
           <div className="focus-model-label">
             <span>{tone.element}</span>

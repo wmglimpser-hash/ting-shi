@@ -2,12 +2,13 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-const MODEL_URL = "/models/wood.glb";
+const DEFAULT_MODEL_URL = "/models/wood.glb";
 
 export default function WoodModel({
   playing,
   motionEnabled,
   visible,
+  modelUrl = DEFAULT_MODEL_URL,
   onReady,
   onError,
 }) {
@@ -96,7 +97,7 @@ export default function WoodModel({
       resizeObserver.observe(mount);
 
       new GLTFLoader().load(
-        MODEL_URL,
+        modelUrl,
         (gltf) => {
           if (disposed) return;
 
@@ -178,7 +179,7 @@ export default function WoodModel({
         mount.removeChild(renderer.domElement);
       }
     };
-  }, []);
+  }, [modelUrl]);
 
   return (
     <div
