@@ -5139,6 +5139,17 @@ body {
   }
 }
 
+/* Keep the generated landscape crisp; atmospheric depth comes from the artwork itself. */
+.converge-background::before {
+  filter: saturate(0.84) sepia(0.04) contrast(1.04);
+  opacity: 1;
+}
+
+.focus-side {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 /* Reference-led focus scene: a light shanshui scroll frames the model. */
 .converge-scene {
   min-height: clamp(690px, calc(100svh - 150px), 820px);
