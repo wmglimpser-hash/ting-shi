@@ -4763,3 +4763,378 @@ body {
     gap: 2px;
   }
 }
+
+/* Focus composition: a separate landscape layer frames the central model. */
+.converge-scene {
+  min-height: clamp(650px, calc(100dvh - 190px), 790px);
+  background: #08110d;
+  border-color: #b3c0a426;
+}
+
+.converge-background {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  background: #08110d;
+  pointer-events: none;
+}
+
+.converge-background::before {
+  position: absolute;
+  inset: -7%;
+  content: "";
+  background:
+    linear-gradient(90deg, #07100de8 0%, #07100d8f 35%, #07100db8 72%, #07100deb 100%),
+    url("/art/river.png") center 54% / cover;
+  filter: saturate(0.58) brightness(0.68) contrast(1.08);
+  opacity: 0.86;
+  transform: scale(1.03);
+  animation: focus-landscape-drift 26s ease-in-out infinite alternate;
+}
+
+.converge-background::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    radial-gradient(circle at 50% 46%, transparent 0 18%, #07100d1c 38%, #050a08d9 100%),
+    linear-gradient(180deg, #050b08b0 0%, transparent 25%, transparent 71%, #050a08e8 100%);
+  box-shadow: inset 0 0 0 1px #d9e0cc12;
+}
+
+.converge-scene .scene-top {
+  border-bottom: 1px solid #d8e0cf1c;
+}
+
+.converge-scene .focus-body {
+  grid-template-columns: minmax(170px, 0.72fr) minmax(330px, 1.42fr) minmax(220px, 0.86fr);
+  align-items: stretch;
+  gap: clamp(18px, 2.8vw, 45px);
+  min-height: clamp(520px, calc(100dvh - 330px), 630px);
+  padding: 22px clamp(22px, 4vw, 62px) 10px;
+}
+
+.focus-side {
+  position: relative;
+  min-width: 0;
+  border: 1px solid #d8e0cf1c;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #102019a1, #07100d48 72%);
+  box-shadow: inset 0 1px #ffffff0b, 0 18px 40px #02060428;
+  backdrop-filter: blur(7px);
+}
+
+.focus-side-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 22px 21px 24px;
+}
+
+.focus-side-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 22px clamp(20px, 2.5vw, 35px) 24px;
+  text-align: left;
+}
+
+.focus-side-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #9daa91;
+  font: 8px var(--mono);
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+.focus-side-heading i {
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(90deg, #b9c9ad80, transparent);
+}
+
+.focus-time-mark {
+  margin: clamp(35px, 6vh, 74px) 0 30px;
+}
+
+.focus-time-mark > span {
+  color: #b8c6ab;
+  font: 10px var(--mono);
+  letter-spacing: 0.18em;
+}
+
+.focus-time-mark strong {
+  display: block;
+  margin-top: 13px;
+  color: #e9eddc;
+  font-size: clamp(31px, 3vw, 48px);
+  font-weight: 400;
+  letter-spacing: 0.13em;
+}
+
+.focus-time-mark small {
+  display: block;
+  margin-top: 9px;
+  color: #9eaa92;
+  font: 10px var(--mono);
+}
+
+.focus-relations {
+  margin: 0;
+  border-top: 1px solid #d8e0cf1c;
+}
+
+.focus-relations > div {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 13px;
+  padding: 12px 0;
+  border-bottom: 1px solid #d8e0cf12;
+}
+
+.focus-relations dt {
+  color: #85937e;
+  font-size: 10px;
+}
+
+.focus-relations dd {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: #dae3d1;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.focus-side-note {
+  margin: 25px 0 0;
+  color: #98a58f;
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+.focus-side-watermark {
+  position: absolute;
+  right: 18px;
+  bottom: 17px;
+  color: #dbe4d32b;
+  font-size: 25px;
+  letter-spacing: 0.2em;
+  writing-mode: vertical-rl;
+}
+
+.converge-scene .orb-space {
+  justify-content: center;
+  min-width: 0;
+  padding: 12px 0 3px;
+}
+
+.converge-scene .orb-space::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(92%, 510px);
+  aspect-ratio: 1;
+  content: "";
+  border: 1px solid #d7e1cf16;
+  border-radius: 50%;
+  background: radial-gradient(circle, #afc0a50b, transparent 64%);
+  box-shadow: 0 0 80px #a3c3aa0b;
+  transform: translate(-50%, -50%);
+}
+
+.converge-scene .orb-space > * {
+  position: relative;
+  z-index: 1;
+}
+
+.converge-scene .focus-orbit {
+  width: min(100%, 430px);
+}
+
+.focus-model-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 300px);
+  margin-top: 15px;
+  padding-top: 12px;
+  border-top: 1px solid #d8e0cf1c;
+  color: #cbd7c1;
+}
+
+.focus-model-label > span {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border: 1px solid #d8e0cf42;
+  border-radius: 50%;
+  color: #d3dfc9;
+  font-size: 12px;
+}
+
+.focus-model-label div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.focus-model-label strong {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.focus-model-label small {
+  color: #879782;
+  font: 9px var(--mono);
+}
+
+.focus-side-right .focus-side-heading {
+  margin-bottom: clamp(30px, 6vh, 62px);
+}
+
+.focus-side-right .overline {
+  color: #9baa91;
+}
+
+.focus-side-right h2 {
+  margin: 15px 0 11px;
+  font-size: clamp(31px, 3.3vw, 50px);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-align: left;
+}
+
+.focus-side-right > p {
+  color: #acb8a4;
+  font-size: 12px;
+}
+
+.focus-side-right .focus-track {
+  margin: 25px 0 21px;
+  color: #dae1d3;
+}
+
+.focus-side-right .focus-controls {
+  justify-content: flex-start;
+  gap: 22px;
+  margin-bottom: 23px;
+}
+
+.focus-side-right .focus-save {
+  align-self: flex-start;
+  margin-top: 20px;
+}
+
+@keyframes focus-landscape-drift {
+  from {
+    transform: scale(1.03) translate3d(-1%, 0, 0);
+  }
+  to {
+    transform: scale(1.08) translate3d(1%, -1%, 0);
+  }
+}
+
+@media (max-width: 1100px) and (min-width: 761px) {
+  .converge-scene .focus-body {
+    grid-template-columns: minmax(145px, 0.66fr) minmax(275px, 1.2fr) minmax(195px, 0.8fr);
+    gap: 17px;
+    padding-inline: 19px;
+  }
+
+  .focus-side-left,
+  .focus-side-right {
+    padding-inline: 16px;
+  }
+
+  .converge-scene .focus-orbit {
+    width: min(100%, 355px);
+  }
+
+  .focus-side-right h2 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 760px) {
+  .converge-scene {
+    min-height: 0;
+  }
+
+  .converge-scene .scene-top {
+    min-height: 59px;
+    padding-inline: 18px;
+  }
+
+  .converge-scene .focus-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+    min-height: 0;
+    padding: 16px 15px 12px;
+  }
+
+  .converge-scene .orb-space {
+    order: 1;
+    padding: 5px 0 3px;
+  }
+
+  .converge-scene .focus-orbit {
+    width: min(100%, 330px);
+  }
+
+  .focus-side-left,
+  .focus-side-right {
+    border-radius: 8px;
+  }
+
+  .focus-side-left {
+    order: 2;
+    padding: 17px 17px 20px;
+  }
+
+  .focus-side-right {
+    order: 3;
+    padding: 19px 17px 20px;
+  }
+
+  .focus-time-mark {
+    margin: 26px 0 20px;
+  }
+
+  .focus-time-mark strong {
+    font-size: 30px;
+  }
+
+  .focus-side-watermark {
+    display: none;
+  }
+
+  .focus-side-right .focus-side-heading {
+    margin-bottom: 27px;
+  }
+
+  .focus-side-right h2 {
+    font-size: 30px;
+  }
+
+  .focus-side-right .focus-controls {
+    justify-content: center;
+  }
+
+  .focus-side-right .focus-save {
+    align-self: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .converge-background::before {
+    animation: none;
+  }
+}

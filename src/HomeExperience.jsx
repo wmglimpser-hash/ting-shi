@@ -844,6 +844,8 @@ function FocusOrb({ playing, motionEnabled }) {
 
 function Converge(props) {
   const {
+    state,
+    current,
     track,
     isPlaying,
     onPlay,
@@ -855,12 +857,15 @@ function Converge(props) {
   } = props;
   const [motionEnabled, setMotionEnabled] = useState(true);
   const saved = savedTracks.some((item) => item.id === track.id);
+  const tone = tones.find((item) => item.name === track.tone) || tones[0];
+  const moment = current?.data || {};
   return (
     <section
       className={
         "scene converge-scene " + (motionEnabled ? "motion-enabled" : "")
       }
     >
+      <div className="converge-background" aria-hidden="true" />
       <div className="scene-top">
         <span>
           听时<span className="scene-top-note">专注于此刻</span>
@@ -875,12 +880,50 @@ function Converge(props) {
         </button>
       </div>
       <div className="focus-body">
+        <aside className="focus-side focus-side-left" aria-label="当前时间关系">
+          <div className="focus-side-heading">
+            <span>01 / THE MOMENT</span>
+            <i />
+          </div>
+          <div className="focus-time-mark">
+            <span>{String((current?.index ?? 0) + 1).padStart(2, "0")}</span>
+            <strong>{moment.name}时</strong>
+            <small>{moment.range}</small>
+          </div>
+          <dl className="focus-relations">
+            <div>
+              <dt>五行</dt>
+              <dd>{moment.element}</dd>
+            </div>
+            <div>
+              <dt>五音</dt>
+              <dd>{moment.tone}</dd>
+            </div>
+            <div>
+              <dt>经脉</dt>
+              <dd>{moment.meridian}</dd>
+            </div>
+          </dl>
+          <p className="focus-side-note">{moment.mood}</p>
+          <span className="focus-side-watermark">{state?.name || "收敛"}</span>
+        </aside>
         <div className="orb-space">
           <span className="orb-annotation">INHALE · EXHALE</span>
           <FocusOrb playing={isPlaying} motionEnabled={motionEnabled} />
           <span className="orb-caption">声音之外，一切都慢下来。</span>
+          <div className="focus-model-label">
+            <span>{tone.element}</span>
+            <div>
+              <strong>{tone.name}音 · {tone.colorName}</strong>
+              <small>{tone.note} · {tone.modernNote}</small>
+            </div>
+          </div>
         </div>
-        <div className="focus-content">
+        <div className="focus-content focus-side focus-side-right">
+          <div className="focus-side-heading">
+            <span>02 / CURRENT SOUND</span>
+            <i />
+          </div>
           <span className="overline">BE HERE. BE STILL.</span>
           <h2>{track.title}</h2>
           <p>让此刻，更专注。</p>
