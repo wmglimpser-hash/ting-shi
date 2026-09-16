@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Icon from "./Icon";
+import WoodModel from "./WoodModel";
 import {
   designStates,
   tones,
@@ -783,42 +784,58 @@ function Transform(props) {
   );
 }
 
-function FocusOrb() {
+function FocusOrb({ playing, breathing }) {
+  const [modelState, setModelState] = useState("loading");
+
   return (
     <div className="focus-orbit" aria-hidden="true">
       <i />
       <i />
       <i />
       <i />
-      <svg viewBox="0 0 240 240">
-        <defs>
-          <radialGradient id="stone-light" cx="32%" cy="25%" r="75%">
-            <stop offset="0" stopColor="#aaa08e" />
-            <stop offset=".4" stopColor="#615b51" />
-            <stop offset=".78" stopColor="#292a25" />
-            <stop offset="1" stopColor="#0d100e" />
-          </radialGradient>
-          <filter id="stone-grain">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency=".28"
-              numOctaves="4"
-              seed="8"
-              result="noise"
-            />
-            <feColorMatrix in="noise" type="saturate" values="0" />
-            <feComposite in2="SourceGraphic" operator="in" />
-            <feBlend in2="SourceGraphic" mode="multiply" />
-          </filter>
-        </defs>
-        <circle
-          cx="120"
-          cy="120"
-          r="108"
-          fill="url(#stone-light)"
-          filter="url(#stone-grain)"
-        />
-      </svg>
+      <div
+        className={
+          "focus-orb-fallback " +
+          (modelState === "ready" ? "is-hidden" : "")
+        }
+      >
+        <svg viewBox="0 0 240 240">
+          <defs>
+            <radialGradient id="stone-light" cx="32%" cy="25%" r="75%">
+              <stop offset="0" stopColor="#aaa08e" />
+              <stop offset=".4" stopColor="#615b51" />
+              <stop offset=".78" stopColor="#292a25" />
+              <stop offset="1" stopColor="#0d100e" />
+            </radialGradient>
+            <filter id="stone-grain">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency=".28"
+                numOctaves="4"
+                seed="8"
+                result="noise"
+              />
+              <feColorMatrix in="noise" type="saturate" values="0" />
+              <feComposite in2="SourceGraphic" operator="in" />
+              <feBlend in2="SourceGraphic" mode="multiply" />
+            </filter>
+          </defs>
+          <circle
+            cx="120"
+            cy="120"
+            r="108"
+            fill="url(#stone-light)"
+            filter="url(#stone-grain)"
+          />
+        </svg>
+      </div>
+      <WoodModel
+        playing={playing}
+        breathing={breathing}
+        visible={modelState === "ready"}
+        onReady={() => setModelState("ready")}
+        onError={() => setModelState("error")}
+      />
       <span className="orbit-top" />
       <span className="orbit-bottom" />
     </div>
@@ -858,7 +875,7 @@ function Converge(props) {
       <div className="focus-body">
         <div className="orb-space">
           <span className="orb-annotation">INHALE · EXHALE</span>
-          <FocusOrb />
+          <FocusOrb playing={isPlaying} breathing={breathing} />
           <span className="orb-caption">声音之外，一切都慢下来。</span>
         </div>
         <div className="focus-content">
