@@ -835,6 +835,19 @@ function Converge(props) {
       className="scene converge-scene"
     >
       <div className="converge-background" aria-hidden="true" />
+      <div className="focus-geese" aria-hidden="true">
+        <svg className="focus-geese-flock flock-a" viewBox="0 0 220 100">
+          <path d="M14 55 Q25 40 37 55 Q48 42 61 55" />
+          <path d="M92 34 Q101 24 111 34 Q120 24 130 34" />
+          <path d="M157 68 Q166 57 176 68 Q185 57 196 68" />
+          <path d="M57 81 Q65 72 74 81 Q83 71 92 81" />
+        </svg>
+        <svg className="focus-geese-flock flock-b" viewBox="0 0 220 100">
+          <path d="M18 50 Q27 39 37 50 Q46 39 57 50" />
+          <path d="M86 73 Q95 61 105 73 Q115 60 125 73" />
+          <path d="M153 34 Q161 25 170 34 Q179 24 188 34" />
+        </svg>
+      </div>
       <div className="scene-top">
         <span>
           听时<span className="scene-top-note">专注于此刻</span>

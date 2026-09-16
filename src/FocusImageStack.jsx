@@ -33,8 +33,8 @@ export default function FocusImageStack({ element = "木", playing = false }) {
       const rect = root.getBoundingClientRect();
       const normalizedX = (event.clientX - rect.left) / rect.width - 0.5;
       const normalizedY = (event.clientY - rect.top) / rect.height - 0.5;
-      targetX = clamp(normalizedX * 18, -9, 9);
-      targetY = clamp(normalizedY * 12, -6, 6);
+      targetX = clamp(normalizedX * 6, -3, 3);
+      targetY = clamp(normalizedY * 4, -2, 2);
       if (!frame) frame = requestAnimationFrame(paint);
     };
 
@@ -57,7 +57,7 @@ export default function FocusImageStack({ element = "木", playing = false }) {
       <div className="focus-image-aura" />
       <div className="focus-image-shadow" />
       <div className="focus-image-subject">
-        <img src={layer.src} alt="" draggable="false" />
+        <img key={layer.src} src={layer.src} alt="" draggable="false" />
       </div>
       <div className="focus-image-sheen" />
       <div className="focus-image-motes" />

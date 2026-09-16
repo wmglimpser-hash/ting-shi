@@ -6181,3 +6181,123 @@ body {
     font-size: 19px;
   }
 }
+
+/* Quiet motion pass: keep the subject composed and move only the distant scene. */
+.focus-image-aura {
+  opacity: 0.36;
+}
+
+.focus-image-sheen,
+.focus-image-ripple {
+  display: none;
+}
+
+.focus-image-motes {
+  opacity: 0.12;
+  animation: none;
+}
+
+.focus-image-stack.is-playing .focus-image-aura {
+  opacity: 0.48;
+  animation: none;
+}
+
+.focus-image-stack.is-playing .focus-image-sheen,
+.focus-image-stack.is-playing .focus-image-ripple,
+.focus-image-stack.is-playing .focus-image-ripple::before,
+.focus-image-stack.is-playing .focus-image-ripple::after {
+  display: none;
+  animation: none;
+}
+
+.focus-image-subject img {
+  animation: focus-subject-fade 0.72s ease both;
+}
+
+.focus-geese {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.focus-geese-flock {
+  position: absolute;
+  top: 22%;
+  left: 100%;
+  width: clamp(130px, 13vw, 220px);
+  height: auto;
+  overflow: visible;
+  color: #4d6059;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+  opacity: 0.38;
+  transform-origin: center;
+  animation: focus-geese-fly 38s linear infinite;
+  will-change: transform, opacity;
+}
+
+.focus-geese-flock.flock-b {
+  top: 35%;
+  width: clamp(88px, 8vw, 150px);
+  color: #718077;
+  opacity: 0.24;
+  animation-duration: 54s;
+  animation-delay: -25s;
+}
+
+@keyframes focus-subject-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes focus-geese-fly {
+  0% {
+    opacity: 0;
+    transform: translate3d(13vw, 0, 0) scale(0.72);
+  }
+  10% {
+    opacity: 0.38;
+  }
+  48% {
+    transform: translate3d(-39vw, -1.5vh, 0) scale(0.82);
+  }
+  90% {
+    opacity: 0.34;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-125vw, -5vh, 0) scale(0.9);
+  }
+}
+
+@media (max-width: 760px) {
+  .focus-geese-flock {
+    top: 25%;
+    width: 118px;
+    opacity: 0.28;
+  }
+
+  .focus-geese-flock.flock-b {
+    top: 38%;
+    width: 82px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-image-subject img {
+    animation: none;
+  }
+
+  .focus-geese {
+    display: none;
+  }
+}
