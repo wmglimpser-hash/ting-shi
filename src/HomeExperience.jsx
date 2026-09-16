@@ -791,7 +791,7 @@ function Transform(props) {
   );
 }
 
-function FocusOrb({ playing, motionEnabled, modelUrl }) {
+function FocusOrb({ modelUrl }) {
   const [modelState, setModelState] = useState("loading");
 
   useEffect(() => {
@@ -842,8 +842,6 @@ function FocusOrb({ playing, motionEnabled, modelUrl }) {
       </div>
       <WoodModel
         key={modelUrl}
-        playing={playing}
-        motionEnabled={motionEnabled}
         modelUrl={modelUrl}
         visible={modelState === "ready"}
         onReady={() => setModelState("ready")}
@@ -868,30 +866,23 @@ function Converge(props) {
     progress,
     setProgress,
   } = props;
-  const [motionEnabled, setMotionEnabled] = useState(true);
   const saved = savedTracks.some((item) => item.id === track.id);
   const tone = tones.find((item) => item.name === track.tone) || tones[0];
   const moment = current?.data || {};
   const modelUrl = elementModels[moment.element] || elementModels.木;
   return (
     <section
-      className={
-        "scene converge-scene " + (motionEnabled ? "motion-enabled" : "")
-      }
+      className="scene converge-scene"
     >
       <div className="converge-background" aria-hidden="true" />
       <div className="scene-top">
         <span>
           听时<span className="scene-top-note">专注于此刻</span>
         </span>
-        <button
-          className="breath-toggle"
-          onClick={() => setMotionEnabled((value) => !value)}
-          aria-pressed={motionEnabled}
-        >
+        <span className="focus-static-status">
           <span className="tiny-dot" />
-          旋转动效 {motionEnabled ? "开" : "关"}
-        </button>
+          模型静置
+        </span>
       </div>
       <div className="focus-body">
         <aside className="focus-side focus-side-left" aria-label="当前时间关系">
@@ -934,11 +925,7 @@ function Converge(props) {
         </aside>
         <div className="orb-space">
           <span className="orb-annotation">INHALE · EXHALE</span>
-          <FocusOrb
-            playing={isPlaying}
-            motionEnabled={motionEnabled}
-            modelUrl={modelUrl}
-          />
+          <FocusOrb modelUrl={modelUrl} />
           <span className="orb-caption">声音之外，一切都慢下来。</span>
           <div className="focus-model-label">
             <span>{tone.element}</span>

@@ -5139,6 +5139,49 @@ body {
   }
 }
 
+/* Static model + transparent panels: let the landscape remain the visual surface. */
+.converge-background::before {
+  filter: none;
+}
+
+.converge-background::after {
+  background:
+    linear-gradient(90deg, #f4eee39c 0%, #f4eee31f 18%, transparent 36%, transparent 64%, #f4eee31f 82%, #f4eee39c 100%),
+    linear-gradient(180deg, #f7f0e755 0%, transparent 21%, transparent 72%, #f0e7d96e 100%);
+}
+
+.converge-scene .scene-top {
+  background: transparent;
+}
+
+.focus-static-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  color: #6c614e;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.focus-static-status .tiny-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #8d765b;
+  box-shadow: 0 0 0 5px #8d765b1c;
+}
+
+.focus-side {
+  background: #fffaf026;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.focus-model-label {
+  background: #fffaf02e;
+}
+
 /* Keep the generated landscape crisp; atmospheric depth comes from the artwork itself. */
 .converge-background::before {
   filter: saturate(0.84) sepia(0.04) contrast(1.04);

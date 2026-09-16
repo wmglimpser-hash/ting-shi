@@ -5,26 +5,14 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 const DEFAULT_MODEL_URL = "/models/wood.glb";
 
 export default function WoodModel({
-  playing,
-  motionEnabled,
   visible,
   modelUrl = DEFAULT_MODEL_URL,
   onReady,
   onError,
 }) {
   const mountRef = useRef(null);
-  const playingRef = useRef(playing);
-  const motionEnabledRef = useRef(motionEnabled);
   const onReadyRef = useRef(onReady);
   const onErrorRef = useRef(onError);
-
-  useEffect(() => {
-    playingRef.current = playing;
-  }, [playing]);
-
-  useEffect(() => {
-    motionEnabledRef.current = motionEnabled;
-  }, [motionEnabled]);
 
   useEffect(() => {
     onReadyRef.current = onReady;
@@ -40,7 +28,6 @@ export default function WoodModel({
 
     let renderer;
     let resizeObserver;
-    let animationFrame = 0;
     let disposed = false;
     let modelRoot;
     let loadedScene;
@@ -82,6 +69,8 @@ export default function WoodModel({
       modelRoot.position.y = -0.18;
       scene.add(modelRoot);
 
+      const render = () => renderer.render(scene, camera);
+
       const resize = () => {
         if (!renderer) return;
         const rect = mount.getBoundingClientRect();
@@ -90,6 +79,7 @@ export default function WoodModel({
         renderer.setSize(width, height, false);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
+        render();
       };
 
       resize();
@@ -117,6 +107,7 @@ export default function WoodModel({
           });
 
           modelRoot.add(loadedScene);
+          render();
           onReadyRef.current?.();
         },
         undefined,
@@ -125,35 +116,13 @@ export default function WoodModel({
         },
       );
 
-      const startedAt = performance.now();
-      const animate = () => {
-        if (disposed) return;
-
-        const elapsed = (performance.now() - startedAt) / 1000;
-        if (modelRoot) {
-          const canRotate = motionEnabledRef.current;
-          const rotationSpeed = playingRef.current ? 0.085 : 0.055;
-
-          modelRoot.rotation.y = canRotate
-            ? -0.18 + elapsed * rotationSpeed
-            : -0.18;
-          modelRoot.rotation.x = 0;
-          modelRoot.position.y = -0.18;
-          modelRoot.scale.setScalar(1);
-        }
-
-        renderer.render(scene, camera);
-        animationFrame = requestAnimationFrame(animate);
-      };
-
-      animate();
+      render();
     } catch {
       onErrorRef.current?.();
     }
 
     return () => {
       disposed = true;
-      cancelAnimationFrame(animationFrame);
       resizeObserver?.disconnect();
 
       if (loadedScene) {
