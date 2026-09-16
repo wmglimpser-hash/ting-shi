@@ -5,6 +5,7 @@ import {
   tones,
   tracks,
   hours,
+  sourceTexts,
   getCalendarMeta,
 } from "./listeningData";
 
@@ -50,22 +51,27 @@ const momentSources = {
   角: {
     quote: "肝在音为角，在声为呼。",
     note: "木意向上，声音从幽微处展开。",
+    reference: "《黄帝内经·素问·阴阳应象大论》",
   },
   徵: {
     quote: "心在音为徵，在声为笑。",
     note: "火意相通，声音带着明亮的流动。",
+    reference: "《黄帝内经·素问·阴阳应象大论》",
   },
   宫: {
     quote: "脾在音为宫，在声为歌。",
     note: "土意承载，声音回到稳定的中心。",
+    reference: "《黄帝内经·素问·阴阳应象大论》",
   },
   商: {
     quote: "肺在音为商，在声为哭。",
     note: "金意清肃，声音留下边界与余韵。",
+    reference: "《黄帝内经·素问·阴阳应象大论》",
   },
   羽: {
     quote: "肾在音为羽，在声为呻。",
     note: "水意深藏，声音向内收拢。",
+    reference: "《黄帝内经·素问·阴阳应象大论》",
   },
 };
 const nav = [
@@ -161,7 +167,7 @@ function MomentLyric({ current, state, selectedTone, selectedTrack }) {
       {
         eyebrow: "古籍片段",
         title: source.quote,
-        detail: `${source.note} · 《黄帝内经 · 素问》`,
+        detail: `${source.note} · ${source.reference}`,
         marker: "SOURCE",
       },
       {
@@ -254,6 +260,48 @@ function MomentLyric({ current, state, selectedTone, selectedTrack }) {
         />
       </aside>
     </div>
+  );
+}
+
+function SourceRibbon({ onNavigate }) {
+  return (
+    <section className="source-ribbon" aria-labelledby="source-ribbon-title">
+      <div className="source-ribbon-heading" data-reveal>
+        <div>
+          <span className="overline">THE TEXTS BEHIND THE SOUND</span>
+          <h2 id="source-ribbon-title">让原文，在声音之外继续流动。</h2>
+        </div>
+        <button className="text-link" onClick={() => onNavigate("source")}>
+          查看完整原文 <Icon name="arrow" size={15} />
+        </button>
+      </div>
+      <div className="source-ribbon-track" tabIndex="0" aria-label="古籍原文节选">
+        {sourceTexts.slice(0, 6).map((item, index) => (
+          <button
+            className="source-ribbon-card"
+            key={item.id}
+            data-reveal
+            style={{ "--reveal-delay": `${index * 70}ms` }}
+            onClick={() => onNavigate("source")}
+          >
+            <span className="source-ribbon-index">{item.index}</span>
+            <span className="source-ribbon-meta">
+              {item.concept} · {item.source}
+            </span>
+            <strong>{item.title}</strong>
+            <span className="source-ribbon-quote">
+              {item.quoteLines ? item.quoteLines[0] : item.quote}
+            </span>
+            <i aria-hidden="true"><Icon name="arrow" size={14} /></i>
+          </button>
+        ))}
+      </div>
+      <div className="source-ribbon-scroll" aria-hidden="true">
+        <span>横向阅览原文节选</span>
+        <i />
+        <span>{String(sourceTexts.length).padStart(2, "0")} TEXTS</span>
+      </div>
+    </section>
   );
 }
 
@@ -1059,6 +1107,7 @@ export default function NowPage(props) {
       <div className="scene-transition" key={state.id}>
         <Scene {...props} track={selectedTrack} />
       </div>
+      <SourceRibbon onNavigate={props.onNavigate} />
       {state.id !== "transform" && (
         <div className="tone-dock">
           <span className="tone-current">

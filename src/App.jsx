@@ -3,6 +3,7 @@ import {
   hours,
   tracks,
   tones,
+  sourceTexts,
   designStates,
   getCurrentHour,
   getTimeState,
@@ -12,8 +13,11 @@ import NowPage, { SiteHeader, BottomNav } from "./HomeExperience";
 
 function ToneTabs({ selectedTone, onToneChange }) {
   return (
-    <div className="tone-tabs">
+    <div className="tone-tabs" role="tablist" aria-label="按五音浏览">
       <button
+        type="button"
+        role="tab"
+        aria-selected={selectedTone === "全部"}
         className={selectedTone === "全部" ? "active" : ""}
         onClick={() => onToneChange("全部")}
       >
@@ -22,6 +26,9 @@ function ToneTabs({ selectedTone, onToneChange }) {
       {tones.map((tone) => (
         <button
           key={tone.name}
+          type="button"
+          role="tab"
+          aria-selected={selectedTone === tone.name}
           className={selectedTone === tone.name ? "active" : ""}
           onClick={() => onToneChange(tone.name)}
         >
@@ -60,9 +67,21 @@ function ListenPage({
     selectedTone === "全部"
       ? "tone-theme-all"
       : "tone-theme-" + activeTone.theme;
+  const handleCardPointerMove = (event) => {
+    const card = event.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    card.style.setProperty("--pointer-x", `${x}%`);
+    card.style.setProperty("--pointer-y", `${y}%`);
+  };
+  const resetCardPointer = (event) => {
+    event.currentTarget.style.removeProperty("--pointer-x");
+    event.currentTarget.style.removeProperty("--pointer-y");
+  };
   return (
     <main className={"listen-page page-shell paper-page " + toneClass}>
-      <div className="page-heading">
+      <div className="page-heading" data-reveal>
         <div>
           <span className="eyebrow">02 / 声音索引</span>
           <h1>听</h1>
@@ -74,7 +93,7 @@ function ListenPage({
         </p>
       </div>
       <ToneTabs selectedTone={selectedTone} onToneChange={onToneChange} />
-      <section className="tone-story">
+      <section className="tone-story" data-reveal>
         <div className="tone-story-orb">
           <span>{selectedTone === "全部" ? "五音" : selectedTone}</span>
           <i />
@@ -113,7 +132,7 @@ function ListenPage({
           </div>
         </div>
       </section>
-      <section className="track-library">
+      <section className="track-library" data-reveal>
         <div className="library-title">
           <span>时辰曲目</span>
           <span>{visibleTracks.length.toString().padStart(2, "0")} 首声音</span>
@@ -127,6 +146,10 @@ function ListenPage({
             }
             key={track.id}
             onClick={() => onTrack(track)}
+            onPointerMove={handleCardPointerMove}
+            onPointerLeave={resetCardPointer}
+            data-reveal
+            style={{ "--reveal-delay": `${Math.min(index, 8) * 55}ms` }}
           >
             <span className="track-number">
               {String(index + 1).padStart(2, "0")}
@@ -180,7 +203,74 @@ function ListenPage({
   );
 }
 
-function SourcePage({ current, onNavigate }) {
+function SourceTextCard({ item, open, onToggle, style }) {
+  const panelId = `source-text-panel-${item.id}`;
+  return (
+    <article
+      className={`source-text-card ${open ? "is-open" : ""}`}
+      style={style}
+    >
+      <button
+        className="source-text-trigger"
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={onToggle}
+      >
+        <span className="source-text-index">{item.index}</span>
+        <span className="source-text-heading">
+          <small>{item.concept}</small>
+          <strong>{item.title}</strong>
+        </span>
+        <span className="source-text-source">{item.source}</span>
+        <span className="source-text-toggle" aria-hidden="true">
+          {open ? "−" : "+"}
+        </span>
+      </button>
+      {open ? (
+        <div className="source-text-body" id={panelId}>
+          <div className="source-text-quote">
+            {item.quoteLines ? (
+              item.quoteLines.map((line) => <p key={line}>{line}</p>)
+            ) : (
+              <p>{item.quote}</p>
+            )}
+          </div>
+          <div className="source-text-foot">
+            <p>{item.note}</p>
+            <a
+              href={item.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="source-text-link"
+            >
+              查看原典 <Icon name="arrow" size={14} />
+            </a>
+          </div>
+        </div>
+      ) : null}
+    </article>
+  );
+}
+
+function SourcePage({ onNavigate }) {
+  const [openSource, setOpenSource] = useState(sourceTexts[0].id);
+  const [sourceFilter, setSourceFilter] = useState("全部");
+  const sourceFilters = [
+    "全部",
+    ...Array.from(new Set(sourceTexts.map((item) => item.concept))),
+  ];
+  const visibleSourceTexts =
+    sourceFilter === "全部"
+      ? sourceTexts
+      : sourceTexts.filter((item) => item.concept === sourceFilter);
+
+  useEffect(() => {
+    if (!visibleSourceTexts.some((item) => item.id === openSource)) {
+      setOpenSource(visibleSourceTexts[0]?.id || null);
+    }
+  }, [openSource, visibleSourceTexts]);
+
   return (
     <main className="source-page page-shell paper-page">
       <div className="page-heading source-heading">
@@ -194,7 +284,7 @@ function SourcePage({ current, onNavigate }) {
           不替你判断，也不替你解释。
         </p>
       </div>
-      <section className="source-hero">
+      <section className="source-hero" data-reveal>
         <div className="source-seal">
           <span>时</span>
           <small>听时</small>
@@ -207,40 +297,83 @@ function SourcePage({ current, onNavigate }) {
           </p>
         </div>
       </section>
-      <section className="relation-card">
+      <section className="relation-card" data-reveal>
         <div className="relation-top">
-          <span>当前时辰 · {current.data.name}时</span>
-          <span>{current.data.range}</span>
+          <span>关系图 · 静态阅读</span>
+          <span>四层概念</span>
         </div>
         <div className="relation-chain">
           <div>
             <span className="chain-index">01</span>
-            <strong>{current.data.name}时</strong>
-            <small>纳子法 · 时辰</small>
+            <strong>十二时辰</strong>
+            <small>时间秩序</small>
           </div>
           <span className="chain-arrow">→</span>
           <div>
             <span className="chain-index">02</span>
-            <strong>
-              {current.data.meridian.replace("足", "").replace("手", "")}
-            </strong>
-            <small>子午流注 · 经脉</small>
+            <strong>经脉</strong>
+            <small>子午流注 · 行气</small>
           </div>
           <span className="chain-arrow">→</span>
           <div>
             <span className="chain-index">03</span>
-            <strong>{current.data.element}</strong>
-            <small>脏腑五行 · 属性</small>
+            <strong>五行</strong>
+            <small>相生相应 · 属性</small>
           </div>
           <span className="chain-arrow">→</span>
           <div className="relation-last">
             <span className="chain-index">04</span>
-            <strong>{current.data.tone}音</strong>
-            <small>五音 · 调式</small>
+            <strong>五音</strong>
+            <small>宫商角徵羽 · 声音</small>
           </div>
         </div>
       </section>
-      <section className="source-reading">
+      <section
+        className="source-library"
+        aria-labelledby="source-library-title"
+        data-reveal
+      >
+        <div className="source-library-heading">
+          <div>
+            <span className="eyebrow">原文 · 静置文库</span>
+            <h2 id="source-library-title">古籍原文</h2>
+            <p>
+              这一组文字不随当前时辰变化，按需展开。先读原文，再决定它与你的此刻如何相遇。
+            </p>
+          </div>
+          <span className="source-library-count">
+            {String(visibleSourceTexts.length).padStart(2, "0")} TEXTS
+          </span>
+        </div>
+        <div className="source-filters" aria-label="古籍主题筛选">
+          {sourceFilters.map((filter) => (
+            <button
+              key={filter}
+              className={sourceFilter === filter ? "active" : ""}
+              aria-pressed={sourceFilter === filter}
+              onClick={() => setSourceFilter(filter)}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+        <div className="source-text-grid">
+          {visibleSourceTexts.map((item, index) => (
+            <SourceTextCard
+              key={item.id}
+              item={item}
+              open={openSource === item.id}
+              style={{ "--reveal-delay": `${index * 65}ms` }}
+              onToggle={() =>
+                setOpenSource((currentId) =>
+                  currentId === item.id ? null : item.id,
+                )
+              }
+            />
+          ))}
+        </div>
+      </section>
+      <section className="source-reading" data-reveal>
         <div className="reading-label">
           <span>短读</span>
           <span>READING 01</span>
@@ -275,6 +408,7 @@ function PlayerWave({ playing }) {
           style={{
             "--bar-height": `${18 + Math.abs(Math.sin(index * 1.19)) * 72}%`,
             "--bar-delay": `${(index % 8) * -0.13}s`,
+            "--bar-index": index,
           }}
         />
       ))}
@@ -289,6 +423,7 @@ function GlobalPlayer({
   onPlay,
   onSeek,
   onSkip,
+  audioReactive,
 }) {
   const elapsed = `${String(Math.floor(progress / 60)).padStart(2, "0")}:${String(
     Math.floor(progress % 60),
@@ -299,17 +434,22 @@ function GlobalPlayer({
 
   return (
     <aside
-      className={`global-player ${isPlaying ? "is-playing" : "is-paused"}`}
+      className={`global-player ${isPlaying ? "is-playing" : "is-paused"} ${audioReactive ? "audio-reactive" : ""}`}
       aria-label="独立播放器"
+      aria-live="polite"
     >
       <div className="global-player-art">
+        <span className="global-player-art-sheen" aria-hidden="true" />
         {track.coverSrc ? (
           <img src={track.coverSrc} alt={`${track.title}封面`} loading="eager" />
         ) : null}
       </div>
       <div className="global-player-copy">
         <div className="global-player-kicker">
-          <span>{isPlaying ? "正在聆听" : "已暂停"}</span>
+          <span>
+            <i className="player-status-dot" aria-hidden="true" />
+            {isPlaying ? "正在聆听" : "已暂停"}
+          </span>
           <span>{track.hour} · {track.tone}音</span>
         </div>
         <strong>{track.title}</strong>
@@ -374,6 +514,11 @@ function App() {
   const eventTimer = useRef(null);
   const audioRef = useRef(null);
   const triggerEventRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const mediaSourceRef = useRef(null);
+  const animationFrameRef = useRef(null);
+  const [audioReady, setAudioReady] = useState(false);
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -426,6 +571,104 @@ function App() {
   };
 
   triggerEventRef.current = triggerEvent;
+
+  const ensureAudioAnalysis = () => {
+    const audio = audioRef.current;
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+    if (!audio || !AudioContextClass) return;
+
+    try {
+      if (!audioContextRef.current) {
+        const context = new AudioContextClass();
+        const analyser = context.createAnalyser();
+        const mediaSource = context.createMediaElementSource(audio);
+        analyser.fftSize = 64;
+        analyser.smoothingTimeConstant = 0.82;
+        mediaSource.connect(analyser);
+        analyser.connect(context.destination);
+        audioContextRef.current = context;
+        analyserRef.current = analyser;
+        mediaSourceRef.current = mediaSource;
+      }
+      if (audioContextRef.current.state === "suspended") {
+        audioContextRef.current.resume();
+      }
+      setAudioReady(true);
+    } catch {
+      setAudioReady(false);
+    }
+  };
+
+  useEffect(() => {
+    const analyser = analyserRef.current;
+    const root = document.documentElement;
+    if (!analyser || !isPlaying) {
+      ["--audio-energy", "--audio-bass", "--audio-mid", "--audio-air"].forEach(
+        (property) => root.style.setProperty(property, "0"),
+      );
+      return undefined;
+    }
+
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    const average = (start, end) => {
+      const slice = data.slice(start, Math.max(start + 1, end));
+      return slice.reduce((sum, value) => sum + value, 0) / slice.length / 255;
+    };
+    const readAudio = () => {
+      analyser.getByteFrequencyData(data);
+      const bass = average(0, 4);
+      const mid = average(4, 13);
+      const air = average(13, data.length);
+      const energy = Math.min(1, bass * 0.52 + mid * 0.33 + air * 0.15);
+      root.style.setProperty("--audio-energy", energy.toFixed(3));
+      root.style.setProperty("--audio-bass", bass.toFixed(3));
+      root.style.setProperty("--audio-mid", mid.toFixed(3));
+      root.style.setProperty("--audio-air", air.toFixed(3));
+      animationFrameRef.current = window.requestAnimationFrame(readAudio);
+    };
+
+    readAudio();
+    return () => {
+      if (animationFrameRef.current) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [audioReady, isPlaying, selectedTrack.id]);
+
+  useEffect(
+    () => () => {
+      if (animationFrameRef.current) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
+      mediaSourceRef.current?.disconnect();
+      analyserRef.current?.disconnect();
+      audioContextRef.current?.close();
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const targets = Array.from(document.querySelectorAll("[data-reveal]"));
+    if (!targets.length) return undefined;
+    if (!("IntersectionObserver" in window)) {
+      targets.forEach((target) => target.classList.add("is-visible"));
+      return undefined;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -5%" },
+    );
+    targets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, [activeState.id, page, selectedTone]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -482,8 +725,8 @@ function App() {
       return;
     }
 
-    audio.autoplay = true;
-    const playRequest = audio.play();
+      audio.autoplay = true;
+      const playRequest = audio.play();
     playRequest
       ?.then(() => {
         setAutoplayBlocked(false);
@@ -503,6 +746,7 @@ function App() {
 
     const resumeAfterGesture = () => {
       if (!audio.paused) return;
+      ensureAudioAnalysis();
       audio.autoplay = true;
       setIsPlaying(true);
       const playRequest = audio.play();
@@ -526,6 +770,7 @@ function App() {
   }, [selectedTrack.id, selectedTrack.audioSrc]);
 
   const handlePlay = (value = !isPlaying, track = selectedTrack) => {
+    if (value) ensureAudioAnalysis();
     if (track.id !== selectedTrack.id) {
       setSelectedTrack(track);
       setProgress(0);
@@ -539,6 +784,7 @@ function App() {
 
   const handleTrack = (track) => {
     const sameTrack = track.id === selectedTrack.id;
+    if (!sameTrack || !isPlaying) ensureAudioAnalysis();
     setSelectedTrack(track);
     if (!sameTrack || progress >= audioDuration) {
       setProgress(0);
@@ -567,6 +813,7 @@ function App() {
   };
 
   const handleSkip = (direction) => {
+    ensureAudioAnalysis();
     const next =
       tracks[
         (tracks.findIndex((item) => item.id === selectedTrack.id) +
@@ -597,57 +844,63 @@ function App() {
         aria-hidden="true"
         style={{ display: "none" }}
       />
+      <div className="audio-field" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <i />
+      </div>
       <SiteHeader
         page={page}
         onNavigate={navigate}
         current={current}
         state={activeState}
       />
-      {page === "now" && (
-        <NowPage
-          current={current}
-          state={activeState}
-          baseState={baseState}
-          previewState={previewState}
-          eventLabel={eventLabel}
-          onPreview={setPreviewState}
-          onReset={resetState}
-          selectedTrack={playerTrack}
-          isPlaying={isPlaying}
-          onPlay={() => handlePlay()}
-          progress={progress}
-          setProgress={handleSeek}
-          selectedTone={
-            selectedTone === "全部" ? current.data.tone : selectedTone
-          }
-          onToneChange={handleToneChange}
-          savedTracks={savedTracks}
-          onFavorite={handleFavorite}
-          onTrack={handleTrack}
-          onNavigate={navigate}
-          onFocus={() => {
-            setPreviewState(null);
-            setEventState("converge");
-            setEventLabel("进入专注");
-            window.clearTimeout(eventTimer.current);
-          }}
-          onSkip={handleSkip}
-        />
-      )}
-      {page === "listen" && (
-        <ListenPage
-          selectedTone={selectedTone}
-          onToneChange={handleToneChange}
-          selectedTrack={playerTrack}
-          onTrack={handleTrack}
-          isPlaying={isPlaying}
-          audioError={audioError}
-          onNavigate={navigate}
-        />
-      )}
-      {page === "source" && (
-        <SourcePage current={current} onNavigate={navigate} />
-      )}
+      <div className={`page-view page-view-${page}`} key={page}>
+        {page === "now" && (
+          <NowPage
+            current={current}
+            state={activeState}
+            baseState={baseState}
+            previewState={previewState}
+            eventLabel={eventLabel}
+            onPreview={setPreviewState}
+            onReset={resetState}
+            selectedTrack={playerTrack}
+            isPlaying={isPlaying}
+            onPlay={() => handlePlay()}
+            progress={progress}
+            setProgress={handleSeek}
+            selectedTone={
+              selectedTone === "全部" ? current.data.tone : selectedTone
+            }
+            onToneChange={handleToneChange}
+            savedTracks={savedTracks}
+            onFavorite={handleFavorite}
+            onTrack={handleTrack}
+            onNavigate={navigate}
+            onFocus={() => {
+              setPreviewState(null);
+              setEventState("converge");
+              setEventLabel("进入专注");
+              window.clearTimeout(eventTimer.current);
+            }}
+            onSkip={handleSkip}
+          />
+        )}
+        {page === "listen" && (
+          <ListenPage
+            selectedTone={selectedTone}
+            onToneChange={handleToneChange}
+            selectedTrack={playerTrack}
+            onTrack={handleTrack}
+            isPlaying={isPlaying}
+            audioError={audioError}
+            onNavigate={navigate}
+          />
+        )}
+        {page === "source" && <SourcePage onNavigate={navigate} />}
+      </div>
       <GlobalPlayer
         track={playerTrack}
         isPlaying={isPlaying}
@@ -655,6 +908,7 @@ function App() {
         onPlay={() => handlePlay()}
         onSeek={handleSeek}
         onSkip={handleSkip}
+        audioReactive={audioReady && isPlaying}
       />
       <BottomNav page={page} onNavigate={navigate} />
     </div>

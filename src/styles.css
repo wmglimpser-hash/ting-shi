@@ -2464,6 +2464,84 @@ svg {
     grid-template-columns: 1fr;
     gap: 25px;
   }
+  .source-library {
+    margin-bottom: 56px;
+  }
+  .source-library-heading {
+    display: block;
+    padding-bottom: 19px;
+  }
+  .source-library-heading h2 {
+    margin-top: 12px;
+    font-size: 25px;
+  }
+  .source-library-heading p {
+    font-size: 11px;
+    line-height: 1.9;
+  }
+  .source-library-count {
+    display: block;
+    margin-top: 17px;
+    padding-bottom: 0;
+    font-size: 9px;
+  }
+  .source-text-grid {
+    grid-template-columns: 1fr;
+  }
+  .source-text-card:nth-child(odd) {
+    border-right: 0;
+  }
+  .source-text-card:nth-last-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+  .source-text-card:last-child {
+    border-bottom: 0;
+  }
+  .source-text-trigger {
+    min-height: 104px;
+    grid-template-columns: 28px minmax(0, 1fr) 18px;
+    gap: 11px;
+    padding: 17px 14px;
+  }
+  .source-text-index {
+    font-size: 9px;
+  }
+  .source-text-heading {
+    gap: 6px;
+  }
+  .source-text-heading small,
+  .source-text-source {
+    font-size: 9px;
+  }
+  .source-text-heading strong {
+    font-size: 15px;
+  }
+  .source-text-source {
+    grid-column: 2;
+  }
+  .source-text-toggle {
+    grid-column: 3;
+    grid-row: 1 / 3;
+  }
+  .source-text-body {
+    padding: 0 14px 19px 53px;
+  }
+  .source-text-quote {
+    padding: 14px 13px;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .source-text-foot {
+    display: block;
+    margin-top: 12px;
+  }
+  .source-text-foot p {
+    font-size: 9px;
+  }
+  .source-text-link {
+    margin-top: 13px;
+    font-size: 9px;
+  }
   .relation-chain {
     display: flex;
     flex-wrap: wrap;
@@ -3726,5 +3804,493 @@ body {
   .global-player * {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* Immersive sound field: motion is tied to the audio signal, not decoration alone. */
+:root {
+  --audio-energy: 0;
+  --audio-bass: 0;
+  --audio-mid: 0;
+  --audio-air: 0;
+  --silk-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+html {
+  background: var(--paper);
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.app {
+  overflow: hidden;
+}
+
+.app::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(0.08 + var(--audio-energy) * 0.16);
+  background:
+    radial-gradient(
+      circle at 76% 16%,
+      color-mix(in srgb, var(--accent) 30%, transparent),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 20% 84%,
+      color-mix(in srgb, var(--accent) 18%, transparent),
+      transparent 30%
+    );
+  filter: blur(24px);
+  transition: opacity 1.2s ease;
+}
+
+.audio-field {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: calc(0.1 + var(--audio-energy) * 0.24);
+  mix-blend-mode: multiply;
+}
+
+.audio-field::before,
+.audio-field::after {
+  content: "";
+  position: absolute;
+  width: 42vw;
+  height: 42vw;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(calc(0.92 + var(--audio-bass) * 0.18));
+  transition: transform 0.5s ease;
+}
+
+.audio-field::before {
+  top: 34%;
+  left: 82%;
+}
+
+.audio-field::after {
+  top: 79%;
+  left: 13%;
+  width: 28vw;
+  height: 28vw;
+  opacity: 0.55;
+  transform: translate(-50%, -50%) scale(calc(0.92 + var(--audio-mid) * 0.22));
+}
+
+.audio-field span {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 56%, transparent);
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 8%, transparent);
+  animation: ambient-drift 15s ease-in-out infinite alternate;
+}
+
+.audio-field span:nth-child(1) {
+  top: 18%;
+  left: 68%;
+}
+
+.audio-field span:nth-child(2) {
+  top: 62%;
+  left: 88%;
+  animation-delay: -5s;
+}
+
+.audio-field span:nth-child(3) {
+  top: 84%;
+  left: 37%;
+  animation-delay: -9s;
+}
+
+.audio-field i {
+  position: absolute;
+  top: 28%;
+  left: 78%;
+  width: 1px;
+  height: 31vh;
+  background: linear-gradient(transparent, color-mix(in srgb, var(--accent) 22%, transparent), transparent);
+  transform: rotate(32deg);
+  transform-origin: top;
+  opacity: calc(0.3 + var(--audio-air) * 0.65);
+}
+
+.page-view {
+  animation: page-enter 0.72s var(--silk-ease) both;
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.75s var(--silk-ease),
+    transform 0.75s var(--silk-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.chapter-heading {
+  position: relative;
+}
+
+.chapter-heading::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 14px;
+  width: min(18vw, 220px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 45%, var(--line)));
+  opacity: 0.75;
+}
+
+.scene {
+  box-shadow: 0 16px 40px #5361500d;
+  transition:
+    box-shadow 0.7s ease,
+    border-color 0.7s ease,
+    transform 0.7s var(--silk-ease);
+}
+
+.scene:hover {
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--accent) 13%, transparent);
+}
+
+.seed-stage::before {
+  content: "";
+  position: absolute;
+  inset: 14% 10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) calc(8% + var(--audio-energy) * 19%), transparent),
+    transparent 66%
+  );
+  transform: scale(calc(0.92 + var(--audio-energy) * 0.14));
+  transition: transform 0.35s ease;
+}
+
+.sound-seed {
+  z-index: 1;
+  box-shadow:
+    inset 0 1px 2px #ffffff50,
+    0 0 0 calc(5px + var(--audio-energy) * 8px) #f8f5e870,
+    0 8px calc(20px + var(--audio-energy) * 24px) color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.hour-dial::before,
+.hour-dial::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+  border-radius: 50%;
+  transform: rotate(calc(var(--audio-air) * 12deg));
+  transition: transform 0.6s ease;
+}
+
+.hour-dial::after {
+  inset: 22px;
+  border-style: dashed;
+  opacity: 0.55;
+  transform: rotate(calc(-12deg + var(--audio-mid) * 24deg));
+}
+
+.global-player {
+  --player-glow: calc(16px + var(--audio-energy) * 34px);
+}
+
+.global-player.audio-reactive {
+  border-color: color-mix(in srgb, var(--accent) 52%, #d5d8c355);
+}
+
+.global-player::before {
+  inset: 8px 13%;
+  filter: blur(var(--player-glow));
+  opacity: calc(0.42 + var(--audio-energy) * 0.34);
+}
+
+.global-player-art {
+  isolation: isolate;
+}
+
+.global-player-art-sheen {
+  position: absolute;
+  z-index: 3;
+  inset: -30%;
+  pointer-events: none;
+  background: linear-gradient(125deg, transparent 38%, #ffffff22 50%, transparent 62%);
+  transform: translateX(-60%) rotate(8deg);
+  transition: transform 0.8s ease;
+}
+
+.global-player.is-playing .global-player-art-sheen {
+  transform: translateX(60%) rotate(8deg);
+  transition-delay: 0.35s;
+}
+
+.player-status-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: 1px;
+  box-shadow: 0 0 0 calc(3px + var(--audio-energy) * 4px) color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.global-player.audio-reactive .player-status-dot {
+  animation: status-pulse 1.5s ease-in-out infinite;
+}
+
+.global-player-wave i {
+  box-shadow: 0 0 calc(2px + var(--audio-energy) * 7px) color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.global-player-wave.playing i {
+  animation-duration: calc(1.35s - var(--audio-energy) * 0.34s);
+}
+
+.source-ribbon {
+  max-width: 1070px;
+  margin: clamp(42px, 7vw, 92px) auto 0;
+  padding: 30px 0 12px;
+  border-top: 1px solid var(--line);
+}
+
+.source-ribbon-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+
+.source-ribbon-heading h2 {
+  max-width: 560px;
+  margin: 13px 0 0;
+  font-size: clamp(23px, 2.6vw, 34px);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.08em;
+}
+
+.source-ribbon-heading .text-link {
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.source-ribbon-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(230px, 1fr);
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 2px 18px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 42%, var(--line)) transparent;
+}
+
+.source-ribbon-card {
+  position: relative;
+  min-height: 214px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
+  padding: 19px 19px 17px;
+  border: 1px solid color-mix(in srgb, var(--accent) 19%, var(--line));
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 42%),
+    #f7f3e9aa;
+  text-align: left;
+  scroll-snap-align: start;
+  transition:
+    transform 0.45s var(--silk-ease),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    background 0.35s ease;
+}
+
+.source-ribbon-card:hover,
+.source-ribbon-card:focus-visible {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 44%),
+    #faf6ea;
+  box-shadow: 0 17px 34px color-mix(in srgb, var(--accent) 13%, transparent);
+}
+
+.source-ribbon-index {
+  color: color-mix(in srgb, var(--accent) 70%, var(--muted));
+  font: 10px var(--mono);
+  letter-spacing: 0.12em;
+}
+
+.source-ribbon-meta {
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+}
+
+.source-ribbon-card strong {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.source-ribbon-quote {
+  display: -webkit-box;
+  margin-top: 12px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.75;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.source-ribbon-card > i {
+  position: absolute;
+  right: 16px;
+  bottom: 15px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+  border-radius: 50%;
+  color: var(--accent);
+  font-style: normal;
+  transition: transform 0.35s ease, background 0.35s ease;
+}
+
+.source-ribbon-card:hover > i,
+.source-ribbon-card:focus-visible > i {
+  transform: translateX(4px);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.source-ribbon-scroll {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 3px;
+  color: var(--muted);
+  font: 8px var(--mono);
+  letter-spacing: 0.12em;
+}
+
+.source-ribbon-scroll i {
+  width: 44px;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 42%, var(--line));
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ambient-drift {
+  from {
+    transform: translate3d(-10px, 8px, 0) scale(0.8);
+  }
+  to {
+    transform: translate3d(13px, -13px, 0) scale(1.35);
+  }
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 0.58;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 760px) {
+  .audio-field::before {
+    width: 76vw;
+    height: 76vw;
+    top: 31%;
+    left: 92%;
+  }
+
+  .audio-field::after {
+    width: 52vw;
+    height: 52vw;
+    top: 83%;
+    left: 9%;
+  }
+
+  .chapter-heading::after {
+    bottom: 9px;
+    width: 30vw;
+  }
+
+  .source-ribbon {
+    margin-top: 46px;
+    padding-top: 24px;
+  }
+
+  .source-ribbon-heading {
+    display: block;
+  }
+
+  .source-ribbon-heading .text-link {
+    margin-top: 17px;
+  }
+
+  .source-ribbon-track {
+    grid-auto-columns: minmax(78vw, 1fr);
+    padding-bottom: 14px;
+  }
+
+  .source-ribbon-card {
+    min-height: 195px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .audio-field,
+  .audio-field::before,
+  .audio-field::after {
+    display: none;
   }
 }
