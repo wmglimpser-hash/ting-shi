@@ -6025,3 +6025,147 @@ body {
     animation: none;
   }
 }
+
+/* The focus scene keeps its moment verse inside the left information panel. */
+.converge-scene .focus-side {
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: background 0.42s ease, box-shadow 0.42s ease;
+}
+
+.converge-scene .focus-side:hover,
+.converge-scene .focus-side:focus-within,
+.converge-scene .focus-side.is-active {
+  background: #f8f2e74f;
+  box-shadow: 0 14px 34px #5e513d13, inset 0 0 0 1px #fffdf766;
+}
+
+@media (min-width: 761px) {
+  .focus-side-left .desktop-moment-verse.is-embedded {
+    display: block;
+    min-height: 0;
+    padding: 0 0 15px;
+    border: 0;
+    border-bottom: 1px solid #9d805c4d;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-rail,
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-context {
+    display: none;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-stage {
+    width: 100%;
+    margin: 0;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-topline {
+    display: flex;
+    gap: 8px;
+    overflow: hidden;
+    font-size: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-topline span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-lines {
+    height: 93px;
+    margin-top: 5px;
+    mask-image: none;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-line {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 4px 0;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-line-meta {
+    padding-top: 0;
+    font-size: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-line-copy {
+    gap: 4px;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-line-copy strong {
+    overflow: hidden;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-line.active .moment-verse-line-copy strong {
+    font-size: clamp(16px, 1.35vw, 21px);
+    white-space: normal;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-line-copy small {
+    overflow: hidden;
+    font-size: 9px;
+    line-height: 1.5;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-progress {
+    gap: 5px;
+    margin: 0;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-progress i {
+    width: 11px;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-progress i.active {
+    width: 25px;
+  }
+}
+
+@media (max-width: 760px) {
+  .focus-side-left .desktop-moment-verse.is-embedded {
+    display: block;
+    min-height: 0;
+    padding: 0 0 14px;
+    border: 0;
+    border-bottom: 1px solid #9d805c4d;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-rail,
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-context {
+    display: none;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-stage {
+    width: 100%;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-topline {
+    font-size: 8px;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-lines {
+    height: 92px;
+    margin-top: 5px;
+    mask-image: none;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-line {
+    padding: 4px 0;
+  }
+
+  .focus-side-left .desktop-moment-verse.is-embedded .moment-verse-line.active .moment-verse-line-copy strong {
+    font-size: 19px;
+  }
+}

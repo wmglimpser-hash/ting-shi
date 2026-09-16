@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "./Icon";
 import FocusImageStack from "./FocusImageStack";
 import {
@@ -138,7 +138,7 @@ export function BottomNav({ page, onNavigate }) {
   );
 }
 
-function MomentLyric({ current, state, selectedTone, selectedTrack }) {
+function MomentLyric({ current, state, selectedTone, selectedTrack, embedded = false }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const calendar = getCalendarMeta(current?.now || new Date());
   const currentTone =
@@ -207,7 +207,10 @@ function MomentLyric({ current, state, selectedTone, selectedTrack }) {
   }, [lines.length]);
 
   return (
-    <div className="desktop-moment-verse" aria-label="此刻信息导览">
+    <div
+      className={`desktop-moment-verse ${embedded ? "is-embedded" : ""}`}
+      aria-label="此刻信息导览"
+    >
       <div className="moment-verse-rail" aria-hidden="true">
         <span className="moment-verse-index">{state.index}</span>
         <span className="moment-verse-rail-line" />
@@ -249,17 +252,19 @@ function MomentLyric({ current, state, selectedTone, selectedTrack }) {
           ))}
         </div>
       </div>
-      <aside className="moment-verse-context">
-        <span className="moment-verse-context-label">当前关系</span>
-        <strong>{current.data.name}时</strong>
-        <span>{current.data.element} · {current.data.tone}音</span>
-        <small>{current.data.mood}</small>
-        <span
-          className="moment-verse-color"
-          style={{ backgroundColor: currentTone.color }}
-          aria-label={`${currentTone.colorName}色`}
-        />
-      </aside>
+      {!embedded ? (
+        <aside className="moment-verse-context">
+          <span className="moment-verse-context-label">当前关系</span>
+          <strong>{current.data.name}时</strong>
+          <span>{current.data.element} · {current.data.tone}音</span>
+          <small>{current.data.mood}</small>
+          <span
+            className="moment-verse-color"
+            style={{ backgroundColor: currentTone.color }}
+            aria-label={`${currentTone.colorName}色`}
+          />
+        </aside>
+      ) : null}
     </div>
   );
 }
@@ -805,10 +810,26 @@ function Converge(props) {
     progress,
     setProgress,
   } = props;
+  const [activePanel, setActivePanel] = useState(null);
+  const panelTimerRef = useRef(null);
   const saved = savedTracks.some((item) => item.id === track.id);
   const tone = tones.find((item) => item.name === track.tone) || tones[0];
   const moment = current?.data || {};
   const element = moment.element || "木";
+
+  useEffect(() => () => window.clearTimeout(panelTimerRef.current), []);
+
+  const activatePanel = (panel) => {
+    window.clearTimeout(panelTimerRef.current);
+    setActivePanel(panel);
+    panelTimerRef.current = window.setTimeout(() => {
+      setActivePanel(null);
+    }, 1800);
+  };
+
+  const panelClass = (panel) =>
+    `focus-side focus-side-${panel} ${activePanel === panel ? "is-active" : ""}`;
+
   return (
     <section
       className="scene converge-scene"
@@ -824,7 +845,19 @@ function Converge(props) {
         </span>
       </div>
       <div className="focus-body">
-        <aside className="focus-side focus-side-left" aria-label="当前时间关系">
+        <aside
+          className={panelClass("left")}
+          aria-label="当前时间关系"
+          onPointerDown={() => activatePanel("left")}
+          onFocusCapture={() => activatePanel("left")}
+        >
+          <MomentLyric
+            current={current}
+            state={state}
+            selectedTone={tone.name}
+            selectedTrack={track}
+            embedded
+          />
           <div className="focus-side-heading">
             <span>01 / THE MOMENT</span>
             <i />
@@ -874,7 +907,11 @@ function Converge(props) {
             </div>
           </div>
         </div>
-        <div className="focus-content focus-side focus-side-right">
+        <div
+          className={`focus-content ${panelClass("right")}`}
+          onPointerDown={() => activatePanel("right")}
+          onFocusCapture={() => activatePanel("right")}
+        >
           <div className="focus-side-heading">
             <span>02 / CURRENT SOUND</span>
             <i />
@@ -1087,50 +1124,52 @@ export default function NowPage(props) {
         "--tone-saturation": tone.theme === "metal" ? ".3" : ".85",
       }}
     >
-      <header className="chapter-heading">
-        <MomentLyric
-          current={current}
-          state={state}
-          selectedTone={selectedTone}
-          selectedTrack={selectedTrack}
-        />
-        <div className="chapter-title">
-          <span className="chapter-number">{state.index}</span>
-          <h1>{state.name}</h1>
-        </div>
-        <div className="chapter-caption">
-          <h2>{chapter.title}</h2>
-          <p>{chapter.desc}</p>
-        </div>
-        <div className="chapter-context">
-          <span>{state.range}</span>
-          <small>
-            {previewState ? "正在预览" : eventLabel ? "因你而变" : "此刻时态"}
-            <b>
-              {previewState
-                ? state.name
-                : eventLabel || current.data.name + "时"}
-            </b>
-          </small>
-          <select
-            className="state-select"
-            aria-label="切换首页形态"
-            value={previewState || ""}
-            onChange={(event) =>
-              event.target.value
-                ? onPreview(event.target.value)
-                : onReset()
-            }
-          >
-            <option value="">随时间 · {baseState?.name || "此刻"}</option>
-            {designStates.map((item) => (
-              <option key={item.id} value={item.id}>
-                预览 · {item.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </header>
+      {state.id !== "converge" ? (
+        <header className="chapter-heading">
+          <MomentLyric
+            current={current}
+            state={state}
+            selectedTone={selectedTone}
+            selectedTrack={selectedTrack}
+          />
+          <div className="chapter-title">
+            <span className="chapter-number">{state.index}</span>
+            <h1>{state.name}</h1>
+          </div>
+          <div className="chapter-caption">
+            <h2>{chapter.title}</h2>
+            <p>{chapter.desc}</p>
+          </div>
+          <div className="chapter-context">
+            <span>{state.range}</span>
+            <small>
+              {previewState ? "正在预览" : eventLabel ? "因你而变" : "此刻时态"}
+              <b>
+                {previewState
+                  ? state.name
+                  : eventLabel || current.data.name + "时"}
+              </b>
+            </small>
+            <select
+              className="state-select"
+              aria-label="切换首页形态"
+              value={previewState || ""}
+              onChange={(event) =>
+                event.target.value
+                  ? onPreview(event.target.value)
+                  : onReset()
+              }
+            >
+              <option value="">随时间 · {baseState?.name || "此刻"}</option>
+              {designStates.map((item) => (
+                <option key={item.id} value={item.id}>
+                  预览 · {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </header>
+      ) : null}
       <div className="scene-transition" key={state.id}>
         <Scene {...props} track={selectedTrack} />
       </div>
