@@ -5138,3 +5138,530 @@ body {
     animation: none;
   }
 }
+
+/* Reference-led focus scene: a light shanshui scroll frames the model. */
+.converge-scene {
+  min-height: clamp(690px, calc(100svh - 150px), 820px);
+  overflow: hidden;
+  color: #2f382f;
+  background: #f4eee3;
+  border-color: #96765055;
+  box-shadow: 0 24px 70px #5d513c14;
+  isolation: isolate;
+}
+
+.converge-scene::before {
+  position: absolute;
+  z-index: 2;
+  inset: 12px;
+  content: "";
+  border: 1px solid #96765035;
+  pointer-events: none;
+}
+
+.converge-background {
+  z-index: -1;
+  background: #f4eee3;
+}
+
+.converge-background::before {
+  inset: -2%;
+  background: url("/art/backgrounds/focus-landscape-v2.png") center / cover no-repeat;
+  filter: saturate(0.72) sepia(0.08) contrast(0.94);
+  opacity: 0.98;
+  transform: scale(1.02);
+  animation: focus-scroll-drift 34s ease-in-out infinite alternate;
+}
+
+.converge-background::after {
+  background:
+    linear-gradient(90deg, #f4eee3d9 0%, #f4eee344 19%, transparent 37%, transparent 63%, #f4eee344 82%, #f4eee3d9 100%),
+    linear-gradient(180deg, #f7f0e7dd 0%, #f7f0e71c 22%, #e8dfd11a 68%, #f0e7d9d9 100%);
+  box-shadow: inset 0 0 0 1px #ffffff77;
+}
+
+.converge-scene .scene-top,
+.converge-scene .focus-body,
+.converge-scene .focus-foot {
+  position: relative;
+  z-index: 3;
+}
+
+.converge-scene .scene-top {
+  min-height: 65px;
+  color: #2b352e;
+  border-bottom-color: #9676505c;
+  background: #f7f1e7a6;
+}
+
+.converge-scene .scene-top-note {
+  color: #736956;
+}
+
+.converge-scene .breath-toggle {
+  color: #6c614e;
+}
+
+.converge-scene .tiny-dot {
+  background: #9c7650;
+  box-shadow: 0 0 0 5px #9c765024;
+}
+
+.converge-scene .focus-body {
+  grid-template-columns: minmax(195px, 0.82fr) minmax(360px, 1.5fr) minmax(245px, 0.84fr);
+  align-items: stretch;
+  gap: clamp(20px, 3vw, 52px);
+  min-height: clamp(560px, calc(100svh - 280px), 660px);
+  padding: 26px clamp(34px, 5vw, 76px) 16px;
+}
+
+.focus-side {
+  border: 1px solid #9d805c75;
+  border-radius: 0;
+  background: #f8f2e7c9;
+  box-shadow: 0 14px 34px #5e513d18, inset 0 0 0 1px #fffdf77a;
+  backdrop-filter: blur(6px);
+}
+
+.focus-side::before {
+  position: absolute;
+  z-index: -1;
+  inset: 6px;
+  content: "";
+  border: 1px solid #a98b6570;
+  pointer-events: none;
+}
+
+.focus-side-left {
+  justify-content: flex-start;
+  padding: 24px 22px 26px;
+}
+
+.focus-side-right {
+  justify-content: flex-start;
+  padding: 24px clamp(22px, 2.6vw, 38px) 27px;
+}
+
+.focus-side-heading {
+  color: #806e57;
+}
+
+.focus-side-heading i {
+  background: linear-gradient(90deg, #a7835d9e, transparent);
+}
+
+.focus-time-mark {
+  margin: clamp(35px, 5vh, 58px) 0 26px;
+}
+
+.focus-time-mark > span {
+  color: #a16f4f;
+}
+
+.focus-time-mark strong {
+  color: #2f392f;
+  font-size: clamp(34px, 3.1vw, 50px);
+}
+
+.focus-time-mark small {
+  color: #776d5e;
+}
+
+.focus-card-kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  color: #806e57;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+.focus-card-kicker em {
+  color: #a28f77;
+  font: 8px var(--mono);
+  font-style: normal;
+  letter-spacing: 0.12em;
+}
+
+.focus-concept {
+  padding: 12px 0 17px;
+  border-top: 1px solid #9d805c4d;
+}
+
+.focus-concept p,
+.focus-dynamics p {
+  margin: 9px 0 0;
+  color: #596256;
+  font-size: 11px;
+  line-height: 1.85;
+}
+
+.focus-relations {
+  border-top-color: #9d805c4d;
+}
+
+.focus-relations > div {
+  padding: 11px 0;
+  border-bottom-color: #9d805c32;
+}
+
+.focus-relations dt {
+  color: #8a775e;
+}
+
+.focus-relations dd {
+  color: #3b473c;
+}
+
+.focus-dynamics {
+  padding-top: 16px;
+}
+
+.focus-side-watermark {
+  right: 17px;
+  bottom: 22px;
+  color: #957a5a37;
+  font-size: 28px;
+}
+
+.converge-scene .orb-space {
+  min-height: 0;
+  padding: 2px 0 5px;
+}
+
+.converge-scene .orb-space::before {
+  width: min(98%, 530px);
+  border-color: #9676505e;
+  background: radial-gradient(circle, #fffaf01f 0 35%, transparent 68%);
+  box-shadow: 0 0 90px #9c825b25;
+}
+
+.converge-scene .orb-space::after {
+  position: absolute;
+  z-index: 0;
+  bottom: 91px;
+  left: 50%;
+  width: min(74%, 360px);
+  height: 36px;
+  content: "";
+  border-bottom: 1px solid #987a5766;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #79654a2b, transparent 70%);
+  filter: blur(1px);
+  transform: translateX(-50%);
+}
+
+.converge-scene .orb-space > * {
+  z-index: 1;
+}
+
+.converge-scene .orb-annotation {
+  color: #8d765b;
+}
+
+.converge-scene .focus-orbit {
+  width: min(100%, 520px);
+}
+
+.converge-scene .focus-orbit > i {
+  border-color: #987a5730;
+}
+
+.converge-scene .focus-orbit > i:nth-child(2) {
+  border-color: #987a573b;
+}
+
+.converge-scene .focus-orbit > i:nth-child(3) {
+  border-color: #987a5749;
+}
+
+.converge-scene .focus-orbit > i:nth-child(4) {
+  border-color: #987a5757;
+}
+
+.converge-scene .wood-model-canvas {
+  filter: drop-shadow(0 18px 20px #453b2a35);
+}
+
+.converge-scene .motion-enabled .focus-orbit > i,
+.converge-scene .motion-enabled .focus-orbit svg {
+  animation: none;
+}
+
+.converge-scene .orb-caption {
+  color: #7c715f;
+}
+
+.focus-model-label {
+  width: min(100%, 340px);
+  margin-top: 17px;
+  padding: 13px 15px 11px;
+  border: 1px solid #a2825c6b;
+  border-radius: 0;
+  background: #f6f0e5d9;
+  color: #455044;
+  box-shadow: 0 8px 18px #5e513d12;
+}
+
+.focus-model-label > span {
+  border-color: #9b7d596d;
+  color: #785d42;
+  background: #e4d4b94c;
+}
+
+.focus-model-label strong {
+  color: #364237;
+}
+
+.focus-model-label small {
+  color: #8c7961;
+}
+
+.focus-track-preview {
+  display: block;
+  margin: clamp(42px, 6vh, 70px) 0 17px;
+}
+
+.focus-track-preview .cover {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: clamp(102px, 10vw, 148px);
+  border-radius: 0;
+  border-color: #92734f73;
+  background: #d9cdbb;
+  box-shadow: 0 12px 22px #5e513d22;
+}
+
+.focus-track-preview .cover > img {
+  object-fit: cover;
+}
+
+.focus-track-preview > div {
+  min-width: 0;
+  margin-top: 14px;
+}
+
+.focus-preview-label {
+  display: block;
+  color: #8c765d;
+  font: 8px var(--mono);
+  letter-spacing: 0.13em;
+}
+
+.focus-side-right h2 {
+  margin: 10px 0 0;
+  color: #2f392f;
+  font-size: clamp(26px, 2.6vw, 38px);
+  letter-spacing: 0.08em;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.focus-side-right > p {
+  color: #6e735f;
+}
+
+.focus-side-right .focus-track {
+  margin: 24px 0 20px;
+  color: #566052;
+}
+
+.focus-side-right .focus-track small {
+  color: #8d7c65;
+}
+
+.focus-side-right .focus-controls {
+  justify-content: flex-start;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.focus-side-right .focus-controls > button:not(.round-play) {
+  color: #665c4d;
+}
+
+.focus-side-right .round-play.large {
+  color: #f7f1e6;
+  border-color: #3b473d;
+  background: #3b473d;
+}
+
+.focus-side-right .round-play.large:hover {
+  background: #53624f;
+}
+
+.focus-side-right .playback-progress {
+  color: #7d715f;
+}
+
+.focus-side-right .playback-progress input {
+  background: linear-gradient(to right, #876e4d var(--progress), #a48d6d55 var(--progress));
+}
+
+.focus-side-right .playback-progress input::-webkit-slider-thumb {
+  background: #765d40;
+}
+
+.focus-side-right .playback-progress input::-moz-range-thumb {
+  background: #765d40;
+}
+
+.focus-side-right .focus-save {
+  align-self: flex-start;
+  margin-top: 20px;
+  color: #776c5a;
+}
+
+.focus-side-right .focus-save.saved {
+  color: #a05e46;
+}
+
+.converge-scene .focus-foot {
+  padding: 23px 34px 25px;
+  color: #85745d;
+  border-top: 1px solid #96765045;
+}
+
+@keyframes focus-scroll-drift {
+  from {
+    transform: scale(1.02) translate3d(-0.5%, 0, 0);
+  }
+  to {
+    transform: scale(1.06) translate3d(0.5%, -0.35%, 0);
+  }
+}
+
+@media (max-width: 1100px) and (min-width: 761px) {
+  .converge-scene .focus-body {
+    grid-template-columns: minmax(156px, 0.72fr) minmax(285px, 1.25fr) minmax(205px, 0.84fr);
+    gap: 18px;
+    padding-inline: 28px;
+  }
+
+  .focus-side-left,
+  .focus-side-right {
+    padding-inline: 17px;
+  }
+
+  .converge-scene .focus-orbit {
+    width: min(100%, 390px);
+  }
+
+  .focus-track-preview .cover {
+    width: 78px;
+    height: 78px;
+  }
+
+  .focus-side-right h2 {
+    font-size: 29px;
+  }
+}
+
+@media (max-width: 760px) {
+  .converge-scene {
+    min-height: 0;
+    border-radius: 0;
+  }
+
+  .converge-scene::before {
+    inset: 7px;
+  }
+
+  .converge-background::before {
+    inset: 0;
+    background-position: center;
+  }
+
+  .converge-scene .scene-top {
+    min-height: 59px;
+    padding-inline: 18px;
+  }
+
+  .converge-scene .focus-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+    min-height: 0;
+    padding: 17px 15px 14px;
+  }
+
+  .converge-scene .orb-space {
+    order: 1;
+    padding: 7px 0 10px;
+  }
+
+  .converge-scene .focus-orbit {
+    width: min(100%, 355px);
+  }
+
+  .converge-scene .orb-space::after {
+    bottom: 94px;
+  }
+
+  .focus-side-left,
+  .focus-side-right {
+    border-radius: 0;
+  }
+
+  .focus-side-left {
+    order: 2;
+    padding: 18px 18px 21px;
+  }
+
+  .focus-side-right {
+    order: 3;
+    padding: 20px 18px 22px;
+  }
+
+  .focus-time-mark {
+    margin: 28px 0 23px;
+  }
+
+  .focus-time-mark strong {
+    font-size: 32px;
+  }
+
+  .focus-side-watermark {
+    display: none;
+  }
+
+  .focus-track-preview {
+    margin: 29px 0 14px;
+  }
+
+  .focus-track-preview .cover {
+    width: 100%;
+    height: 132px;
+  }
+
+  .focus-side-right h2 {
+    font-size: 29px;
+  }
+
+  .focus-side-right .focus-controls {
+    justify-content: center;
+  }
+
+  .focus-side-right .focus-save {
+    align-self: center;
+  }
+
+  .converge-scene .focus-foot {
+    padding-inline: 20px;
+  }
+}
+
+/* Keep the rotating moment verse editorial and legible: one line at a time. */
+.moment-verse-line {
+  transition: none;
+}
+
+.moment-verse-line.active {
+  transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .converge-background::before {
+    animation: none;
+  }
+}

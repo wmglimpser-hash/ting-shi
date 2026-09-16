@@ -890,6 +890,12 @@ function Converge(props) {
             <strong>{moment.name}时</strong>
             <small>{moment.range}</small>
           </div>
+          <div className="focus-concept">
+            <span className="focus-card-kicker">
+              意象 <em>IMAGE</em>
+            </span>
+            <p>{moment.mood}</p>
+          </div>
           <dl className="focus-relations">
             <div>
               <dt>五行</dt>
@@ -904,7 +910,12 @@ function Converge(props) {
               <dd>{moment.meridian}</dd>
             </div>
           </dl>
-          <p className="focus-side-note">{moment.mood}</p>
+          <div className="focus-dynamics">
+            <span className="focus-card-kicker">
+              声场 <em>SOUND FIELD</em>
+            </span>
+            <p>{tone.modernNote} · {tone.note}</p>
+          </div>
           <span className="focus-side-watermark">{state?.name || "收敛"}</span>
         </aside>
         <div className="orb-space">
@@ -924,8 +935,18 @@ function Converge(props) {
             <span>02 / CURRENT SOUND</span>
             <i />
           </div>
-          <span className="overline">BE HERE. BE STILL.</span>
-          <h2>{track.title}</h2>
+          <div className="focus-track-preview">
+            <Cover
+              square
+              variant={track.id}
+              src={track.coverSrc}
+              playing={isPlaying}
+            />
+            <div>
+              <span className="focus-preview-label">正在聆听 / NOW PLAYING</span>
+              <h2>{track.title}</h2>
+            </div>
+          </div>
           <p>让此刻，更专注。</p>
           <span className="focus-track">
             {track.hour}
