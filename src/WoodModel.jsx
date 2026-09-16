@@ -78,6 +78,7 @@ export default function WoodModel({
 
       modelRoot = new THREE.Group();
       modelRoot.rotation.y = -0.18;
+      modelRoot.position.y = -0.18;
       scene.add(modelRoot);
 
       const resize = () => {
@@ -130,13 +131,13 @@ export default function WoodModel({
         const elapsed = (performance.now() - startedAt) / 1000;
         if (modelRoot) {
           const canRotate = motionEnabledRef.current;
-          const rotationSpeed = playingRef.current ? 0.2 : 0.11;
+          const rotationSpeed = playingRef.current ? 0.085 : 0.055;
 
           modelRoot.rotation.y = canRotate
             ? -0.18 + elapsed * rotationSpeed
             : -0.18;
           modelRoot.rotation.x = 0;
-          modelRoot.position.y = 0;
+          modelRoot.position.y = -0.18;
           modelRoot.scale.setScalar(1);
         }
 
