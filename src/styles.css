@@ -6042,6 +6042,18 @@ body {
   box-shadow: 0 14px 34px #5e513d13, inset 0 0 0 1px #fffdf766;
 }
 
+.converge-scene .focus-side-right .focus-track-preview .cover {
+  opacity: 0.46;
+  transition: opacity 0.42s ease, box-shadow 0.42s ease;
+}
+
+.converge-scene .focus-side-right:hover .focus-track-preview .cover,
+.converge-scene .focus-side-right:focus-within .focus-track-preview .cover,
+.converge-scene .focus-side-right.is-active .focus-track-preview .cover {
+  opacity: 1;
+  box-shadow: 0 12px 22px #5e513d22;
+}
+
 @media (min-width: 761px) {
   .focus-side-left .desktop-moment-verse.is-embedded {
     display: block;
