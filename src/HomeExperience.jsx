@@ -863,10 +863,10 @@ function Converge(props) {
         </div>
         <div className="focus-content">
           <span className="overline">BE HERE. BE STILL.</span>
-          <h2>专注模式</h2>
+          <h2>{track.title}</h2>
           <p>让此刻，更专注。</p>
           <span className="focus-track">
-            {track.title}
+            {track.hour}
             <small>
               {track.sub} / {track.tone}音
             </small>
