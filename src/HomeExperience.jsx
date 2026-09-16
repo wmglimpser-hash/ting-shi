@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Icon from "./Icon";
-import WoodModel from "./WoodModel";
+import FocusImageStack from "./FocusImageStack";
 import {
   designStates,
   tones,
@@ -80,13 +80,6 @@ const nav = [
   { id: "listen", label: "听" },
   { id: "source", label: "源" },
 ];
-const elementModels = {
-  木: "/models/wood.glb",
-  火: "/models/fire.glb",
-  土: "/models/earth.glb",
-  金: "/models/metal.glb",
-  水: "/models/water.glb",
-};
 const timeText = (value) =>
   `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(Math.floor(value % 60)).padStart(2, "0")}`;
 
@@ -791,64 +784,10 @@ function Transform(props) {
   );
 }
 
-function FocusOrb({ modelUrl }) {
-  const [modelState, setModelState] = useState("loading");
-
-  useEffect(() => {
-    setModelState("loading");
-  }, [modelUrl]);
-
+function FocusOrb({ element, playing }) {
   return (
-    <div className="focus-orbit" aria-hidden="true">
-      <i />
-      <i />
-      <i />
-      <i />
-      <div
-        className={
-          "focus-orb-fallback " +
-          (modelState === "ready" ? "is-hidden" : "")
-        }
-      >
-        <svg viewBox="0 0 240 240">
-          <defs>
-            <radialGradient id="stone-light" cx="32%" cy="25%" r="75%">
-              <stop offset="0" stopColor="#aaa08e" />
-              <stop offset=".4" stopColor="#615b51" />
-              <stop offset=".78" stopColor="#292a25" />
-              <stop offset="1" stopColor="#0d100e" />
-            </radialGradient>
-            <filter id="stone-grain">
-              <feTurbulence
-                type="fractalNoise"
-                baseFrequency=".28"
-                numOctaves="4"
-                seed="8"
-                result="noise"
-              />
-              <feColorMatrix in="noise" type="saturate" values="0" />
-              <feComposite in2="SourceGraphic" operator="in" />
-              <feBlend in2="SourceGraphic" mode="multiply" />
-            </filter>
-          </defs>
-          <circle
-            cx="120"
-            cy="120"
-            r="108"
-            fill="url(#stone-light)"
-            filter="url(#stone-grain)"
-          />
-        </svg>
-      </div>
-      <WoodModel
-        key={modelUrl}
-        modelUrl={modelUrl}
-        visible={modelState === "ready"}
-        onReady={() => setModelState("ready")}
-        onError={() => setModelState("error")}
-      />
-      <span className="orbit-top" />
-      <span className="orbit-bottom" />
+    <div className="focus-orbit">
+      <FocusImageStack element={element} playing={playing} />
     </div>
   );
 }
@@ -869,7 +808,7 @@ function Converge(props) {
   const saved = savedTracks.some((item) => item.id === track.id);
   const tone = tones.find((item) => item.name === track.tone) || tones[0];
   const moment = current?.data || {};
-  const modelUrl = elementModels[moment.element] || elementModels.木;
+  const element = moment.element || "木";
   return (
     <section
       className="scene converge-scene"
@@ -881,7 +820,7 @@ function Converge(props) {
         </span>
         <span className="focus-static-status">
           <span className="tiny-dot" />
-          模型静置
+          分层意象
         </span>
       </div>
       <div className="focus-body">
@@ -924,8 +863,8 @@ function Converge(props) {
           <span className="focus-side-watermark">{state?.name || "收敛"}</span>
         </aside>
         <div className="orb-space">
-          <span className="orb-annotation">INHALE · EXHALE</span>
-          <FocusOrb modelUrl={modelUrl} />
+          <span className="orb-annotation">IMAGE · FIELD</span>
+          <FocusOrb element={element} playing={isPlaying} />
           <span className="orb-caption">声音之外，一切都慢下来。</span>
           <div className="focus-model-label">
             <span>{tone.element}</span>

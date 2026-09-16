@@ -5220,11 +5220,11 @@ body {
 
 .converge-background::before {
   inset: -2%;
-  background: url("/art/backgrounds/focus-landscape-v2.png") center / cover no-repeat;
-  filter: saturate(0.72) sepia(0.08) contrast(0.94);
-  opacity: 0.98;
-  transform: scale(1.02);
-  animation: focus-scroll-drift 34s ease-in-out infinite alternate;
+  background: url("/art/focus/background-reference.png") center / cover no-repeat;
+  filter: none;
+  opacity: 1;
+  transform: scale(1.01);
+  animation: none;
 }
 
 .converge-background::after {
@@ -5716,6 +5716,312 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .converge-background::before {
+    animation: none;
+  }
+}
+
+/* Reference-led image composition: a calm 2.5D stack replaces the GLB hero. */
+.converge-scene .orb-space {
+  overflow: visible;
+}
+
+.converge-scene .focus-orbit {
+  width: min(100%, 560px);
+  aspect-ratio: 1 / 0.98;
+  overflow: visible;
+}
+
+.focus-image-stack {
+  --pointer-x: 0px;
+  --pointer-y: 0px;
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  pointer-events: auto;
+  transform: translate3d(0, -10px, 0);
+}
+
+.focus-image-aura,
+.focus-image-shadow,
+.focus-image-subject,
+.focus-image-sheen,
+.focus-image-motes,
+.focus-image-ripple {
+  position: absolute;
+  pointer-events: none;
+}
+
+.focus-image-aura {
+  z-index: 0;
+  top: 13%;
+  left: 50%;
+  width: 74%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--focus-element, #b58a5a) 20%, transparent),
+    transparent 66%
+  );
+  opacity: 0.76;
+  transform: translateX(-50%);
+}
+
+.focus-image-shadow {
+  z-index: 1;
+  right: 14%;
+  bottom: 5%;
+  left: 14%;
+  height: 9%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #604e3938 0%, #604e3914 42%, transparent 74%);
+  filter: blur(3px);
+  transform: translate3d(var(--pointer-x), 0, 0) scaleX(0.94);
+  transition: transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.focus-image-subject {
+  z-index: 2;
+  inset: 1% -8% -1%;
+  display: grid;
+  place-items: end center;
+  transform: translate3d(var(--pointer-x), var(--pointer-y), 0);
+  transition: transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+
+.focus-image-subject img {
+  display: block;
+  width: 118%;
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+  object-position: center bottom;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 18px 20px #5e4c3528);
+}
+
+.focus-image-stack.wood {
+  --focus-element: #66805c;
+}
+
+.focus-image-stack.wood .focus-image-subject img {
+  width: 128%;
+}
+
+.focus-image-stack.fire {
+  --focus-element: #c7683d;
+}
+
+.focus-image-stack.fire .focus-image-subject {
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(ellipse at center 54%, #000 34%, #000d 58%, transparent 77%);
+  mask-image: radial-gradient(ellipse at center 54%, #000 34%, #000d 58%, transparent 77%);
+}
+
+.focus-image-stack.fire .focus-image-subject img {
+  width: auto;
+  height: 121%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center center;
+  mix-blend-mode: multiply;
+  transform: translateY(4%);
+}
+
+.focus-image-stack.earth {
+  --focus-element: #9b754e;
+}
+
+.focus-image-stack.earth .focus-image-subject {
+  inset: 3% -3% -1%;
+}
+
+.focus-image-stack.earth .focus-image-subject img {
+  width: 105%;
+}
+
+.focus-image-stack.metal {
+  --focus-element: #9a927b;
+}
+
+.focus-image-stack.metal .focus-image-subject {
+  inset: 4% -5% -1%;
+}
+
+.focus-image-stack.metal .focus-image-subject img {
+  width: 112%;
+}
+
+.focus-image-stack.water {
+  --focus-element: #5d8594;
+}
+
+.focus-image-stack.water .focus-image-subject {
+  inset: 5% -7% -2%;
+}
+
+.focus-image-stack.water .focus-image-subject img {
+  width: 126%;
+}
+
+.focus-image-sheen {
+  z-index: 3;
+  inset: 13% 11% 12%;
+  background: linear-gradient(
+    112deg,
+    transparent 24%,
+    color-mix(in srgb, var(--focus-element, #b58a5a) 12%, white) 47%,
+    transparent 61%
+  );
+  opacity: 0;
+  mix-blend-mode: screen;
+  transform: translateX(-34%);
+}
+
+.focus-image-motes {
+  z-index: 4;
+  inset: 12% 7% 13%;
+  background:
+    radial-gradient(circle at 18% 42%, #9f795d88 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 28%, #a98b6880 0 1px, transparent 2px),
+    radial-gradient(circle at 71% 68%, #f5e2bd75 0 1px, transparent 2px),
+    radial-gradient(circle at 29% 76%, #827f6480 0 1px, transparent 2px);
+  opacity: 0.5;
+  transform: translate3d(calc(var(--pointer-x) * 1.4), calc(var(--pointer-y) * 1.4), 0);
+  transition: transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  animation: focus-motes-drift 14s ease-in-out infinite alternate;
+}
+
+.focus-image-ripple {
+  z-index: 1;
+  top: 17%;
+  left: 50%;
+  width: 66%;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--focus-element, #b58a5a) 22%, transparent);
+  border-radius: 50%;
+  opacity: 0.58;
+  transform: translateX(-50%) scale(0.92);
+}
+
+.focus-image-ripple::before,
+.focus-image-ripple::after {
+  position: absolute;
+  inset: 9%;
+  border: inherit;
+  border-radius: inherit;
+  content: "";
+  opacity: 0.68;
+}
+
+.focus-image-ripple::after {
+  inset: 18%;
+  opacity: 0.52;
+}
+
+.focus-image-stack.is-playing .focus-image-aura {
+  animation: focus-aura-pulse 4.8s ease-in-out infinite;
+}
+
+.focus-image-stack.is-playing .focus-image-sheen {
+  opacity: 0.5;
+  animation: focus-sheen-pass 9s ease-in-out infinite;
+}
+
+.focus-image-stack.is-playing .focus-image-ripple {
+  animation: focus-ripple-pulse 4.8s ease-in-out infinite;
+}
+
+.focus-image-stack.is-playing .focus-image-ripple::before {
+  animation: focus-ripple-pulse 4.8s ease-in-out 1.1s infinite;
+}
+
+.focus-image-stack.is-playing .focus-image-ripple::after {
+  animation: focus-ripple-pulse 4.8s ease-in-out 2.2s infinite;
+}
+
+@keyframes focus-motes-drift {
+  from {
+    opacity: 0.25;
+    transform: translate3d(calc(var(--pointer-x) * 1.4), calc(var(--pointer-y) * 1.4), 0);
+  }
+  to {
+    opacity: 0.68;
+    transform: translate3d(calc(var(--pointer-x) * 1.4 + 4px), calc(var(--pointer-y) * 1.4 - 7px), 0);
+  }
+}
+
+@keyframes focus-aura-pulse {
+  0%,
+  100% {
+    opacity: 0.58;
+    transform: translateX(-50%) scale(0.96);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+@keyframes focus-sheen-pass {
+  0%,
+  24% {
+    transform: translateX(-42%);
+  }
+  64%,
+  100% {
+    transform: translateX(42%);
+  }
+}
+
+@keyframes focus-ripple-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateX(-50%) scale(0.9);
+  }
+  52% {
+    opacity: 0.66;
+    transform: translateX(-50%) scale(1.04);
+  }
+}
+
+@media (max-width: 760px) {
+  .converge-scene .focus-orbit {
+    width: min(100%, 390px);
+  }
+
+  .focus-image-stack {
+    transform: translate3d(0, -3px, 0);
+  }
+
+  .focus-image-subject {
+    inset-inline: -12%;
+  }
+
+  .focus-image-stack.wood .focus-image-subject img {
+    width: 138%;
+  }
+
+  .focus-image-stack.fire .focus-image-subject img {
+    height: 116%;
+  }
+
+  .focus-image-stack.water .focus-image-subject img {
+    width: 140%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-image-motes,
+  .focus-image-stack.is-playing .focus-image-aura,
+  .focus-image-stack.is-playing .focus-image-sheen,
+  .focus-image-stack.is-playing .focus-image-ripple,
+  .focus-image-stack.is-playing .focus-image-ripple::before,
+  .focus-image-stack.is-playing .focus-image-ripple::after {
     animation: none;
   }
 }
