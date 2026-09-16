@@ -784,7 +784,7 @@ function Transform(props) {
   );
 }
 
-function FocusOrb({ playing, breathing }) {
+function FocusOrb({ playing, motionEnabled }) {
   const [modelState, setModelState] = useState("loading");
 
   return (
@@ -831,7 +831,7 @@ function FocusOrb({ playing, breathing }) {
       </div>
       <WoodModel
         playing={playing}
-        breathing={breathing}
+        motionEnabled={motionEnabled}
         visible={modelState === "ready"}
         onReady={() => setModelState("ready")}
         onError={() => setModelState("error")}
@@ -853,11 +853,13 @@ function Converge(props) {
     progress,
     setProgress,
   } = props;
-  const [breathing, setBreathing] = useState(true);
+  const [motionEnabled, setMotionEnabled] = useState(true);
   const saved = savedTracks.some((item) => item.id === track.id);
   return (
     <section
-      className={"scene converge-scene " + (breathing ? "breathing" : "")}
+      className={
+        "scene converge-scene " + (motionEnabled ? "motion-enabled" : "")
+      }
     >
       <div className="scene-top">
         <span>
@@ -865,17 +867,17 @@ function Converge(props) {
         </span>
         <button
           className="breath-toggle"
-          onClick={() => setBreathing((value) => !value)}
-          aria-pressed={breathing}
+          onClick={() => setMotionEnabled((value) => !value)}
+          aria-pressed={motionEnabled}
         >
           <span className="tiny-dot" />
-          呼吸动效 {breathing ? "开" : "关"}
+          旋转动效 {motionEnabled ? "开" : "关"}
         </button>
       </div>
       <div className="focus-body">
         <div className="orb-space">
           <span className="orb-annotation">INHALE · EXHALE</span>
-          <FocusOrb playing={isPlaying} breathing={breathing} />
+          <FocusOrb playing={isPlaying} motionEnabled={motionEnabled} />
           <span className="orb-caption">声音之外，一切都慢下来。</span>
         </div>
         <div className="focus-content">

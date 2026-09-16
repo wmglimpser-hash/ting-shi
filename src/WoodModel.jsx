@@ -6,14 +6,14 @@ const MODEL_URL = "/models/wood.glb";
 
 export default function WoodModel({
   playing,
-  breathing,
+  motionEnabled,
   visible,
   onReady,
   onError,
 }) {
   const mountRef = useRef(null);
   const playingRef = useRef(playing);
-  const breathingRef = useRef(breathing);
+  const motionEnabledRef = useRef(motionEnabled);
   const onReadyRef = useRef(onReady);
   const onErrorRef = useRef(onError);
 
@@ -22,8 +22,8 @@ export default function WoodModel({
   }, [playing]);
 
   useEffect(() => {
-    breathingRef.current = breathing;
-  }, [breathing]);
+    motionEnabledRef.current = motionEnabled;
+  }, [motionEnabled]);
 
   useEffect(() => {
     onReadyRef.current = onReady;
@@ -129,16 +129,15 @@ export default function WoodModel({
 
         const elapsed = (performance.now() - startedAt) / 1000;
         if (modelRoot) {
-          const canBreathe = breathingRef.current;
-          const playbackPulse = playingRef.current && canBreathe
-            ? Math.sin(elapsed * 2.2) * 0.012
-            : 0;
-          const float = canBreathe ? Math.sin(elapsed * 0.72) * 0.018 : 0;
+          const canRotate = motionEnabledRef.current;
+          const rotationSpeed = playingRef.current ? 0.2 : 0.11;
 
-          modelRoot.rotation.y = -0.18 + Math.sin(elapsed * 0.16) * 0.065;
-          modelRoot.rotation.x = Math.sin(elapsed * 0.22) * 0.012;
-          modelRoot.position.y = canBreathe ? Math.sin(elapsed * 0.7) * 0.022 : 0;
-          modelRoot.scale.setScalar(1 + float + playbackPulse);
+          modelRoot.rotation.y = canRotate
+            ? -0.18 + elapsed * rotationSpeed
+            : -0.18;
+          modelRoot.rotation.x = 0;
+          modelRoot.position.y = 0;
+          modelRoot.scale.setScalar(1);
         }
 
         renderer.render(scene, camera);

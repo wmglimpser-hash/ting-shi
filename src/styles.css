@@ -1249,10 +1249,10 @@ svg {
   height: 100%;
   display: block;
 }
-.breathing .focus-orbit svg {
+.motion-enabled .focus-orbit svg {
   animation: stone-breathe 7s ease-in-out infinite;
 }
-.breathing .focus-orbit > i {
+.motion-enabled .focus-orbit > i {
   animation: orbit-breathe 7s ease-in-out infinite;
 }
 .orbit-top,
