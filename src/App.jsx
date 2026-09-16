@@ -399,19 +399,27 @@ function SourcePage({ onNavigate }) {
   );
 }
 
-function PlayerWave({ playing }) {
+function PlayerWave({ playing, progressPercent = 0 }) {
+  const barCount = 34;
   return (
     <div className={"global-player-wave " + (playing ? "playing" : "")} aria-hidden="true">
-      {Array.from({ length: 34 }, (_, index) => (
+      <span className="global-player-wave-baseline" />
+      {Array.from({ length: barCount }, (_, index) => (
         <i
           key={index}
+          className={index / Math.max(1, barCount - 1) * 100 <= progressPercent ? "is-past" : ""}
           style={{
-            "--bar-height": `${18 + Math.abs(Math.sin(index * 1.19)) * 72}%`,
+            "--bar-height": `${24 + (0.24 + Math.sin((index + 1) / barCount * Math.PI) * 0.54 + Math.abs(Math.sin(index * 1.19)) * 0.22) * 62}%`,
+            "--bar-opacity": `${0.5 + Math.abs(Math.sin(index * 0.72)) * 0.5}`,
             "--bar-delay": `${(index % 8) * -0.13}s`,
             "--bar-index": index,
           }}
         />
       ))}
+      <span
+        className="global-player-wave-playhead"
+        style={{ left: `${Math.min(100, Math.max(0, progressPercent))}%` }}
+      />
     </div>
   );
 }
@@ -685,7 +693,7 @@ function GlobalPlayer({
         </div>
         <strong>{track.title}</strong>
         <small>{track.sub} · {track.detail}</small>
-        <PlayerWave playing={isPlaying} />
+        <PlayerWave playing={isPlaying} progressPercent={progressPercent} />
         <div className="global-player-progress">
           <span>{elapsed}</span>
           <input

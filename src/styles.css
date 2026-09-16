@@ -4636,3 +4636,97 @@ body {
     animation: none;
   }
 }
+
+/* Refined audio signature: a fine-grained sound line that belongs to the stone-and-ink palette. */
+.global-player-wave {
+  position: relative;
+  height: 30px;
+  display: grid;
+  grid-template-columns: repeat(34, minmax(0, 1fr));
+  align-items: center;
+  gap: 3px;
+  padding: 0 2px;
+  overflow: hidden;
+}
+
+.global-player-wave-baseline {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  right: 2px;
+  left: 2px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d5dfd135 18%, #d5dfd135 82%, transparent);
+  pointer-events: none;
+}
+
+.global-player-wave i {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 1px;
+  height: var(--bar-height);
+  align-self: center;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #dbe5d5 0%, #91a491 48%, #617a6c 100%);
+  opacity: calc(0.24 + var(--bar-opacity) * 0.42);
+  box-shadow: 0 0 calc(2px + var(--audio-energy, 0) * 7px) color-mix(in srgb, var(--accent) 45%, transparent);
+  transform: scaleY(calc(0.76 + var(--audio-energy, 0) * 0.42));
+  transition: background 0.45s ease, box-shadow 0.45s ease;
+}
+
+.global-player-wave i:nth-of-type(3n + 1) {
+  opacity: calc(0.28 + var(--bar-opacity) * 0.48);
+}
+
+.global-player-wave i.is-past {
+  background: linear-gradient(180deg, #e1e6d9 0%, #c99b78 48%, #8b6d61 100%);
+}
+
+.global-player-wave.playing i {
+  animation: player-bar-breathe-refined 1.45s ease-in-out var(--bar-delay) infinite alternate;
+}
+
+.global-player-wave-playhead {
+  position: absolute;
+  z-index: 3;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background: #f0f2e4;
+  box-shadow: 0 0 8px #e3eadb99;
+  pointer-events: none;
+  transition: left 0.25s ease;
+}
+
+.global-player-wave-playhead::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #e9eedf;
+  border-radius: 50%;
+  background: #a47d68;
+  box-shadow: 0 0 0 3px #b48c6c22, 0 0 12px #d4aa8499;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes player-bar-breathe-refined {
+  from {
+    opacity: calc(0.2 + var(--bar-opacity) * 0.32);
+    transform: scaleY(calc(0.64 + var(--audio-energy, 0) * 0.32));
+  }
+  to {
+    opacity: calc(0.46 + var(--bar-opacity) * 0.5);
+    transform: scaleY(calc(0.92 + var(--audio-energy, 0) * 0.56));
+  }
+}
+
+@media (max-width: 760px) {
+  .global-player-wave {
+    height: 22px;
+    gap: 2px;
+  }
+}
