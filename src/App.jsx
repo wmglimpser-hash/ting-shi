@@ -416,6 +416,140 @@ function PlayerWave({ playing }) {
   );
 }
 
+const loopLabels = {
+  none: "顺序播放",
+  all: "列表循环",
+  one: "单曲循环",
+};
+
+function formatPlayerCountdown(seconds) {
+  const safeSeconds = Math.max(0, Math.floor(seconds));
+  const hours = Math.floor(safeSeconds / 3600);
+  const minutes = Math.floor((safeSeconds % 3600) / 60);
+  const remainingSeconds = safeSeconds % 60;
+  return [hours, minutes, remainingSeconds]
+    .map((value, index) =>
+      index === 0 && hours === 0
+        ? null
+        : String(value).padStart(2, "0"),
+    )
+    .filter(Boolean)
+    .join(":");
+}
+
+function PlaylistPanel({ playlistTracks, selectedTrack, isPlaying, onTrack, onClose }) {
+  return (
+    <div className="global-player-drawer global-player-playlist" aria-label="播放列表">
+      <div className="player-drawer-head">
+        <div>
+          <span>QUEUE / LISTENING ORDER</span>
+          <strong>播放列表</strong>
+        </div>
+        <button type="button" aria-label="关闭播放列表" onClick={onClose}>
+          <Icon name="close" size={16} />
+        </button>
+      </div>
+      <div className="playlist-summary">
+        <strong>{String(playlistTracks.length).padStart(2, "0")}</strong>
+        <span>首声音 · 点击任意一首开始聆听</span>
+      </div>
+      <div className="playlist-list">
+        {playlistTracks.map((item, index) => {
+          const selected = selectedTrack.id === item.id;
+          return (
+            <button
+              type="button"
+              className={`playlist-item ${selected ? "selected" : ""}`}
+              key={item.id}
+              onClick={() => onTrack(item)}
+              aria-label={`${isPlaying && selected ? "暂停" : "播放"}${item.title}`}
+            >
+              <span className="playlist-item-number">
+                {selected && isPlaying ? "●" : String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="playlist-item-copy">
+                <strong>{item.title}</strong>
+                <small>{item.hour} · {item.tone}音 · {item.duration}</small>
+              </span>
+              <span className="playlist-item-action" aria-hidden="true">
+                <Icon name={selected && isPlaying ? "pause" : "play"} size={13} />
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function PlayerSettings({
+  loopMode,
+  onToggleLoop,
+  sleepTimerMinutes,
+  sleepTimerRemaining,
+  onSetTimer,
+  onClose,
+}) {
+  const timerOptions = [0, 15, 30, 60];
+  return (
+    <div className="global-player-drawer global-player-settings" aria-label="定时与循环设置">
+      <div className="player-drawer-head">
+        <div>
+          <span>PLAYER SETTINGS</span>
+          <strong>聆听方式</strong>
+        </div>
+        <button type="button" aria-label="关闭播放器设置" onClick={onClose}>
+          <Icon name="close" size={16} />
+        </button>
+      </div>
+      <div className="player-setting-group">
+        <div className="player-setting-label">
+          <Icon name="clock" size={16} />
+          <div>
+            <strong>定时停止</strong>
+            <small>
+              {sleepTimerRemaining
+                ? `${formatPlayerCountdown(sleepTimerRemaining)} 后停止播放`
+                : "让声音在一段时间后安静下来"}
+            </small>
+          </div>
+        </div>
+        <div className="timer-options" role="group" aria-label="定时停止时长">
+          {timerOptions.map((minutes) => (
+            <button
+              type="button"
+              className={sleepTimerMinutes === minutes ? "active" : ""}
+              key={minutes}
+              aria-pressed={sleepTimerMinutes === minutes}
+              onClick={() => onSetTimer(minutes)}
+            >
+              {minutes === 0 ? "关闭" : `${minutes} 分`}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="player-setting-group player-loop-setting">
+        <div className="player-setting-label">
+          <Icon name="repeat" size={16} />
+          <div>
+            <strong>循环方式</strong>
+            <small>歌曲结束后的下一步</small>
+          </div>
+        </div>
+        <button
+          type="button"
+          className="loop-toggle"
+          aria-pressed={loopMode !== "none"}
+          onClick={onToggleLoop}
+        >
+          <Icon name="repeat" size={14} />
+          {loopLabels[loopMode]}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function GlobalPlayer({
   track,
   isPlaying,
@@ -424,19 +558,116 @@ function GlobalPlayer({
   onSeek,
   onSkip,
   audioReactive,
+  playlistTracks,
+  playerPanel,
+  onPanelChange,
+  onTrack,
+  loopMode,
+  onToggleLoop,
+  sleepTimerMinutes,
+  sleepTimerRemaining,
+  onSetTimer,
 }) {
+  const [dragOffset, setDragOffset] = useState(() => {
+    try {
+      const saved = JSON.parse(
+        window.localStorage.getItem("tingshi-player-position") || "{}",
+      );
+      return {
+        x: Number.isFinite(saved.x) ? saved.x : 0,
+        y: Number.isFinite(saved.y) ? saved.y : 0,
+      };
+    } catch {
+      return { x: 0, y: 0 };
+    }
+  });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef(null);
   const elapsed = `${String(Math.floor(progress / 60)).padStart(2, "0")}:${String(
     Math.floor(progress % 60),
   ).padStart(2, "0")}`;
   const progressPercent = track.length
     ? Math.min(100, Math.max(0, (progress / track.length) * 100))
     : 0;
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const handlePointerDown = (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    const target = event.target;
+    if (
+      target instanceof Element &&
+      target.closest("button, input, a, .global-player-drawer")
+    ) {
+      return;
+    }
+    const rect = event.currentTarget.getBoundingClientRect();
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      baseLeft: rect.left - dragOffset.x,
+      baseTop: rect.top - dragOffset.y,
+      originX: dragOffset.x,
+      originY: dragOffset.y,
+      next: dragOffset,
+    };
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    setIsDragging(true);
+  };
+  const handlePointerMove = (event) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const desiredX = drag.originX + event.clientX - drag.startX;
+    const desiredY = drag.originY + event.clientY - drag.startY;
+    const next = {
+      x: clamp(
+        desiredX,
+        12 - drag.baseLeft,
+        window.innerWidth - 12 - rect.width - drag.baseLeft,
+      ),
+      y: clamp(
+        desiredY,
+        12 - drag.baseTop,
+        window.innerHeight - 12 - rect.height - drag.baseTop,
+      ),
+    };
+    drag.next = next;
+    event.currentTarget.style.setProperty("--player-drag-x", `${next.x}px`);
+    event.currentTarget.style.setProperty("--player-drag-y", `${next.y}px`);
+  };
+  const finishDrag = (event) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const next = drag.next || dragOffset;
+    setDragOffset(next);
+    try {
+      window.localStorage.setItem("tingshi-player-position", JSON.stringify(next));
+    } catch {
+      /* Storage can be unavailable in private browsing. */
+    }
+    dragRef.current = null;
+    setIsDragging(false);
+    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+  const togglePanel = (panel) => {
+    onPanelChange(playerPanel === panel ? null : panel);
+  };
 
   return (
     <aside
-      className={`global-player ${isPlaying ? "is-playing" : "is-paused"} ${audioReactive ? "audio-reactive" : ""}`}
+      className={`global-player ${isPlaying ? "is-playing" : "is-paused"} ${audioReactive ? "audio-reactive" : ""} ${isDragging ? "is-dragging" : ""}`}
       aria-label="独立播放器"
       aria-live="polite"
+      style={{
+        "--player-drag-x": `${dragOffset.x}px`,
+        "--player-drag-y": `${dragOffset.y}px`,
+      }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={finishDrag}
+      onPointerCancel={finishDrag}
     >
       <div className="global-player-art">
         <span className="global-player-art-sheen" aria-hidden="true" />
@@ -483,7 +714,44 @@ function GlobalPlayer({
         <button aria-label="下一首" onClick={() => onSkip(1)}>
           ›
         </button>
+        <button
+          type="button"
+          className={`global-player-tool ${playerPanel === "playlist" ? "active" : ""}`}
+          aria-label="打开播放列表"
+          aria-pressed={playerPanel === "playlist"}
+          onClick={() => togglePanel("playlist")}
+        >
+          <Icon name="layers" size={15} />
+        </button>
+        <button
+          type="button"
+          className={`global-player-tool ${playerPanel === "settings" ? "active" : ""}`}
+          aria-label="打开定时与循环设置"
+          aria-pressed={playerPanel === "settings"}
+          onClick={() => togglePanel("settings")}
+        >
+          <Icon name="clock" size={15} />
+        </button>
       </div>
+      {playerPanel === "playlist" ? (
+        <PlaylistPanel
+          playlistTracks={playlistTracks}
+          selectedTrack={track}
+          isPlaying={isPlaying}
+          onTrack={onTrack}
+          onClose={() => onPanelChange(null)}
+        />
+      ) : null}
+      {playerPanel === "settings" ? (
+        <PlayerSettings
+          loopMode={loopMode}
+          onToggleLoop={onToggleLoop}
+          sleepTimerMinutes={sleepTimerMinutes}
+          sleepTimerRemaining={sleepTimerRemaining}
+          onSetTimer={onSetTimer}
+          onClose={() => onPanelChange(null)}
+        />
+      ) : null}
     </aside>
   );
 }
@@ -496,6 +764,12 @@ function App() {
   const [selectedTrack, setSelectedTrack] = useState(
     () => tracks[getCurrentHour().index],
   );
+  const [playlistTracks] = useState(() => tracks);
+  const [playerPanel, setPlayerPanel] = useState(null);
+  const [loopMode, setLoopMode] = useState("all");
+  const [sleepTimerMinutes, setSleepTimerMinutes] = useState(0);
+  const [sleepTimerEndsAt, setSleepTimerEndsAt] = useState(null);
+  const [sleepTimerRemaining, setSleepTimerRemaining] = useState(0);
   const [progress, setProgress] = useState(0);
   const [audioDuration, setAudioDuration] = useState(tracks[0].length);
   const [audioError, setAudioError] = useState("");
@@ -539,6 +813,37 @@ function App() {
     const timer = window.setInterval(() => setCurrent(getCurrentHour()), 30000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const closePanels = (event) => {
+      if (event.key === "Escape") setPlayerPanel(null);
+    };
+    window.addEventListener("keydown", closePanels);
+    return () => window.removeEventListener("keydown", closePanels);
+  }, []);
+
+  useEffect(() => {
+    if (!sleepTimerEndsAt) {
+      setSleepTimerRemaining(0);
+      return undefined;
+    }
+    const updateRemaining = () => {
+      const remaining = Math.max(
+        0,
+        Math.ceil((sleepTimerEndsAt - Date.now()) / 1000),
+      );
+      setSleepTimerRemaining(remaining);
+      if (remaining === 0) {
+        setIsPlaying(false);
+        setSleepTimerEndsAt(null);
+        setSleepTimerMinutes(0);
+        triggerEventRef.current?.("converge", "定时结束");
+      }
+    };
+    updateRemaining();
+    const timer = window.setInterval(updateRemaining, 1000);
+    return () => window.clearInterval(timer);
+  }, [sleepTimerEndsAt]);
 
   useEffect(() => {
     const currentTrack = tracks[current.index];
@@ -681,6 +986,28 @@ function App() {
     };
     const handleTimeUpdate = () => setProgress(audio.currentTime);
     const handleEnded = () => {
+      if (loopMode === "one") {
+        audio.currentTime = 0;
+        setProgress(0);
+        setIsPlaying(true);
+        audio.play().catch(() => {
+          setIsPlaying(false);
+          setAudioError("浏览器阻止了循环播放，请点击播放按钮继续");
+        });
+        return;
+      }
+      if (loopMode === "all" && playlistTracks.length) {
+        const currentIndex = playlistTracks.findIndex(
+          (item) => item.id === selectedTrack.id,
+        );
+        const next =
+          playlistTracks[(currentIndex + 1 + playlistTracks.length) % playlistTracks.length];
+        setSelectedTrack(next);
+        setProgress(0);
+        setIsPlaying(true);
+        triggerEventRef.current?.("flow", "播放下一段");
+        return;
+      }
       setIsPlaying(false);
       setProgress(Math.floor(audio.duration || selectedTrack.length));
       triggerEventRef.current?.("archive", "播放完成");
@@ -700,7 +1027,7 @@ function App() {
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("error", handleError);
     };
-  }, [selectedTrack.id, selectedTrack.length]);
+  }, [loopMode, playlistTracks, selectedTrack.id, selectedTrack.length]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -814,16 +1141,32 @@ function App() {
 
   const handleSkip = (direction) => {
     ensureAudioAnalysis();
+    if (!playlistTracks.length) return;
     const next =
-      tracks[
-        (tracks.findIndex((item) => item.id === selectedTrack.id) +
+      playlistTracks[
+        (playlistTracks.findIndex((item) => item.id === selectedTrack.id) +
           direction +
-          tracks.length) %
-          tracks.length
+          playlistTracks.length) %
+          playlistTracks.length
       ];
     setSelectedTrack(next);
     setProgress(0);
     setIsPlaying(true);
+  };
+
+  const handleSetTimer = (minutes) => {
+    setSleepTimerMinutes(minutes);
+    setSleepTimerEndsAt(minutes ? Date.now() + minutes * 60 * 1000 : null);
+    triggerEvent(
+      "converge",
+      minutes ? `${minutes}分钟后停止播放` : "已取消定时停止",
+    );
+  };
+
+  const toggleLoopMode = () => {
+    setLoopMode((mode) =>
+      mode === "all" ? "one" : mode === "one" ? "none" : "all",
+    );
   };
 
   const playerTrack = useMemo(
@@ -909,6 +1252,18 @@ function App() {
         onSeek={handleSeek}
         onSkip={handleSkip}
         audioReactive={audioReady && isPlaying}
+        playlistTracks={playlistTracks}
+        playerPanel={playerPanel}
+        onPanelChange={setPlayerPanel}
+        onTrack={(track) => {
+          handleTrack(track);
+          setPlayerPanel(null);
+        }}
+        loopMode={loopMode}
+        onToggleLoop={toggleLoopMode}
+        sleepTimerMinutes={sleepTimerMinutes}
+        sleepTimerRemaining={sleepTimerRemaining}
+        onSetTimer={handleSetTimer}
       />
       <BottomNav page={page} onNavigate={navigate} />
     </div>

@@ -85,5 +85,27 @@ export default function Icon({ name, size = 18, strokeWidth = 1.7 }) {
         <path d="M6.5 4.5A1.5 1.5 0 0 1 8 3h8a1.5 1.5 0 0 1 1.5 1.5V21L12 17.7 6.5 21V4.5Z" />
       </svg>
     );
+  if (name === "clock")
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 7v5l3.2 2" />
+      </svg>
+    );
+  if (name === "repeat")
+    return (
+      <svg {...common}>
+        <path d="m17 3 3 3-3 3" />
+        <path d="M4 6h12a4 4 0 0 1 4 4" />
+        <path d="m7 21-3-3 3-3" />
+        <path d="M20 18H8a4 4 0 0 1-4-4" />
+      </svg>
+    );
+  if (name === "close")
+    return (
+      <svg {...common}>
+        <path d="m6 6 12 12M18 6 6 18" />
+      </svg>
+    );
   return null;
 }
