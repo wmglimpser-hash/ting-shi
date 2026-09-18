@@ -89,7 +89,7 @@ function ListenPage({
         <p>
           五音不是分类标签，
           <br />
-          是十二个时刻的不同气息。
+          是时辰与主题的不同气息。
         </p>
       </div>
       <ToneTabs selectedTone={selectedTone} onToneChange={onToneChange} />
@@ -101,17 +101,17 @@ function ListenPage({
         <div>
           <span className="eyebrow">
             {selectedTone === "全部"
-              ? "TWELVE MOMENTS"
+              ? "MOMENTS & THEMES"
               : "THE " + selectedTone + " MODE"}
           </span>
           <h2>
             {selectedTone === "全部"
-              ? "从此刻出发，听见一天的起伏。"
+              ? "从此刻出发，听见一天与内在主题的起伏。"
               : activeTone.element + " · " + activeTone.note}
           </h2>
           <p>
             {selectedTone === "全部"
-              ? "每个时辰有一首主题声音。它们共享一套五声音阶，也各自保留属于天色、风与地形的细微不同。"
+              ? "每个时辰有主题声音，也收录备用变体与治法意象曲目。它们共享一套五声音阶，并保留属于天色、风、地形与内在感受的细微不同。"
               : "以" +
                 selectedTone +
                 "音为中心的五声音阶，不追求西式终止感，只让旋律在" +
@@ -134,7 +134,7 @@ function ListenPage({
       </section>
       <section className="track-library" data-reveal>
         <div className="library-title">
-          <span>时辰曲目</span>
+          <span>声音曲库</span>
           <span>{visibleTracks.length.toString().padStart(2, "0")} 首声音</span>
         </div>
         {visibleTracks.map((track, index) => (
@@ -193,7 +193,7 @@ function ListenPage({
       <div className="listen-footer">
         <span>
           <Icon name="volume" size={16} />
-          {audioError || "正式音频 · 十二时辰曲库"}
+          {audioError || "正式音频 · 五音主题曲库"}
         </span>
         <button onClick={() => onNavigate("source")}>
           了解五音关系 <Icon name="arrow" size={15} />

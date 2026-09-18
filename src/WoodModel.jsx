@@ -96,9 +96,10 @@ export default function WoodModel({
           const size = bounds.getSize(new THREE.Vector3());
           const center = bounds.getCenter(new THREE.Vector3());
           const largestSide = Math.max(size.x, size.y, size.z) || 1;
+          const modelDisplaySize = 1.72;
 
           loadedScene.position.set(-center.x, -center.y, -center.z);
-          loadedScene.scale.setScalar(2.5 / largestSide);
+          loadedScene.scale.setScalar(modelDisplaySize / largestSide);
           loadedScene.traverse((object) => {
             if (!object.isMesh) return;
             object.frustumCulled = false;

@@ -5172,6 +5172,30 @@ body {
   box-shadow: 0 0 0 5px #8d765b1c;
 }
 
+.home-state-select {
+  max-width: 126px;
+  margin-left: 3px;
+  padding: 4px 15px 4px 0;
+  border: 0;
+  border-bottom: 1px solid #96765055;
+  border-radius: 0;
+  color: #6c614e;
+  background: transparent;
+  font: 9px var(--mono);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.home-state-select:focus-visible {
+  outline: 1px solid #96765088;
+  outline-offset: 3px;
+}
+
+.home-state-select option {
+  color: #2f382f;
+  background: #f4eee3;
+}
+
 .focus-side {
   background: #fffaf026;
   backdrop-filter: none;

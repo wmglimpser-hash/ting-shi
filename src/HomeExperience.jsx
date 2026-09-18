@@ -797,7 +797,7 @@ function FocusOrb({ element, playing }) {
   );
 }
 
-function Converge(props) {
+function HomeMomentScene(props) {
   const {
     state,
     current,
@@ -809,6 +809,11 @@ function Converge(props) {
     savedTracks,
     progress,
     setProgress,
+    baseState,
+    previewState,
+    eventLabel,
+    onPreview,
+    onReset,
   } = props;
   const [activePanel, setActivePanel] = useState(null);
   const panelTimerRef = useRef(null);
@@ -831,9 +836,7 @@ function Converge(props) {
     `focus-side focus-side-${panel} ${activePanel === panel ? "is-active" : ""}`;
 
   return (
-    <section
-      className="scene converge-scene"
-    >
+    <section className="scene converge-scene home-moment-scene">
       <div className="converge-background" aria-hidden="true" />
       <div className="focus-geese" aria-hidden="true">
         <svg className="focus-geese-flock flock-a" viewBox="0 0 220 100">
@@ -850,11 +853,26 @@ function Converge(props) {
       </div>
       <div className="scene-top">
         <span>
-          听时<span className="scene-top-note">专注于此刻</span>
+          听时<span className="scene-top-note">此刻自有其声</span>
         </span>
         <span className="focus-static-status">
           <span className="tiny-dot" />
-          分层意象
+          <span>{previewState ? `预览 · ${state.name}` : eventLabel || "当前时刻"}</span>
+          <select
+            className="home-state-select"
+            aria-label="预览首页状态"
+            value={previewState || ""}
+            onChange={(event) =>
+              event.target.value ? onPreview(event.target.value) : onReset()
+            }
+          >
+            <option value="">随时间 · {baseState?.name || state.name}</option>
+            {designStates.map((item) => (
+              <option key={item.id} value={item.id}>
+                预览 · {item.name}
+              </option>
+            ))}
+          </select>
         </span>
       </div>
       <div className="focus-body">
@@ -941,7 +959,7 @@ function Converge(props) {
               <h2>{track.title}</h2>
             </div>
           </div>
-          <p>让此刻，更专注。</p>
+          <p>让此刻，成为一段声音。</p>
           <span className="focus-track">
             {track.hour}
             <small>
@@ -973,8 +991,8 @@ function Converge(props) {
         </div>
       </div>
       <div className="focus-foot">
-        <span>一呼，一吸，一段声音。</span>
-        <span>FOCUS / 04</span>
+        <span>时间之外，声音仍在流动。</span>
+        <span>{String((current?.index ?? 0) + 1).padStart(2, "0")} / {moment.name}时</span>
       </div>
     </section>
   );
@@ -1113,18 +1131,10 @@ export default function NowPage(props) {
     onPreview,
     onReset,
   } = props;
-  const chapter = chapters[state.id];
   const tone = tones.find((item) => item.name === selectedTone) || tones[0];
-  const Scene = {
-    growth: Growth,
-    flow: Flow,
-    transform: Transform,
-    converge: Converge,
-    archive: Archive,
-  }[state.id];
   return (
     <main
-      className={`now-page chapter-${state.id}`}
+      className={`now-page home-moment-page chapter-${state.id}`}
       style={{
         "--accent": tone.color,
         "--tone-hue": {
@@ -1137,54 +1147,8 @@ export default function NowPage(props) {
         "--tone-saturation": tone.theme === "metal" ? ".3" : ".85",
       }}
     >
-      {state.id !== "converge" ? (
-        <header className="chapter-heading">
-          <MomentLyric
-            current={current}
-            state={state}
-            selectedTone={selectedTone}
-            selectedTrack={selectedTrack}
-          />
-          <div className="chapter-title">
-            <span className="chapter-number">{state.index}</span>
-            <h1>{state.name}</h1>
-          </div>
-          <div className="chapter-caption">
-            <h2>{chapter.title}</h2>
-            <p>{chapter.desc}</p>
-          </div>
-          <div className="chapter-context">
-            <span>{state.range}</span>
-            <small>
-              {previewState ? "正在预览" : eventLabel ? "因你而变" : "此刻时态"}
-              <b>
-                {previewState
-                  ? state.name
-                  : eventLabel || current.data.name + "时"}
-              </b>
-            </small>
-            <select
-              className="state-select"
-              aria-label="切换首页形态"
-              value={previewState || ""}
-              onChange={(event) =>
-                event.target.value
-                  ? onPreview(event.target.value)
-                  : onReset()
-              }
-            >
-              <option value="">随时间 · {baseState?.name || "此刻"}</option>
-              {designStates.map((item) => (
-                <option key={item.id} value={item.id}>
-                  预览 · {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </header>
-      ) : null}
-      <div className="scene-transition" key={state.id}>
-        <Scene {...props} track={selectedTrack} />
+      <div className="scene-transition home-scene-transition" key={state.id}>
+        <HomeMomentScene {...props} track={selectedTrack} />
       </div>
       <SourceRibbon onNavigate={props.onNavigate} />
       {state.id !== "transform" && (
